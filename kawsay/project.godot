@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Kawsay"
-run/main_scene="uid://dhv077jha1l2g"
+run/main_scene="res://Scene/MenuPrincipal/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
