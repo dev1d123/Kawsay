@@ -85,6 +85,20 @@ corner_radius_bottom_left = 12
 shadow_color = Color(0.901961, 0.301961, 0.34902, 0.3)
 shadow_size = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_help_normal"]
+bg_color = Color(0.180392, 0.207843, 0.309804, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 0.6)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 6
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_log_banner"]
 bg_color = Color(0.0901961, 0.278431, 0.219608, 0.95)
 border_width_left = 2
@@ -98,6 +112,46 @@ corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_level_card_normal"]
+bg_color = Color(0.129412, 0.152941, 0.223529, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.25, 0.3, 0.42, 0.8)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_level_card_hover"]
+bg_color = Color(0.160784, 0.192157, 0.282353, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0.960784, 0.745098, 0.278431, 0.3)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge_panel"]
+bg_color = Color(0.0941176, 0.235294, 0.176471, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.8, 0.5, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -153,6 +207,25 @@ grow_vertical = 0
 rotation = -0.349066
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 
+[node name="HelpButton" type="Button" parent="."]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 72.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_help_normal")
+text = "❓"
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -167,7 +240,7 @@ theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 40
+theme_override_constants/separation = 32
 alignment = 1
 
 [node name="Header" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
@@ -196,41 +269,463 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 18
+theme_override_constants/separation = 14
 alignment = 1
 
 [node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 theme_override_styles/hover = SubResource("StyleBoxFlat_play_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_play_hover")
 theme_override_styles/normal = SubResource("StyleBoxFlat_play_normal")
 text = "▶  JUGAR"
 
-[node name="CreditsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
-custom_minimum_size = Vector2(0, 56)
+[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+text = "⚙️  CONFIGURACIÓN"
+
+[node name="CreditsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
+theme_override_font_sizes/font_size = 20
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 text = "📜  CRÉDITOS"
 
 [node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer"]
-custom_minimum_size = Vector2(0, 56)
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_quit_hover")
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 text = "🚪  SALIR"
+
+[node name="LevelSelectOverlay" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OverlayBg" type="Panel" parent="LevelSelectOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="LevelSelectOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 35
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 35
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 22
+alignment = 1
+
+[node name="Header" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Title" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 46
+text = "SELECCIÓN DE NIVEL"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.541176, 0.572549, 0.698039, 1)
+theme_override_font_sizes/font_size = 18
+text = "Elige un volcán para comenzar tu aventura"
+horizontal_alignment = 1
+
+[node name="LevelsContainer" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 14
+
+[node name="Level1Card" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = SubResource("StyleBoxFlat_level_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_level_card_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_level_card_normal")
+
+[node name="Margin" type="MarginContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Icon" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+text = "⛰️"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InfoVBox" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin/HBox/InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Volcan Pichu Pichu"
+
+[node name="SubLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin/HBox/InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 14
+text = "Nivel 1 • Inicial"
+
+[node name="StatusBadge" type="PanelContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin/HBox"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge_panel")
+
+[node name="BadgeLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level1Card/Margin/HBox/StatusBadge"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "DESBLOQUEADO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level2Card" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = SubResource("StyleBoxFlat_level_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_level_card_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_level_card_normal")
+
+[node name="Margin" type="MarginContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Icon" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+text = "🔒"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InfoVBox" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin/HBox/InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Volcan Chachani"
+
+[node name="SubLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin/HBox/InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.7, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 14
+text = "🔒 Supera el Nivel 1"
+
+[node name="StatusBadge" type="PanelContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin/HBox"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge_panel")
+
+[node name="BadgeLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level2Card/Margin/HBox/StatusBadge"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.8, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "BLOQUEADO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Level3Card" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+focus_mode = 0
+theme_override_styles/hover = SubResource("StyleBoxFlat_level_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_level_card_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_level_card_normal")
+
+[node name="Margin" type="MarginContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="Icon" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+text = "🔒"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InfoVBox" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin/HBox/InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Volcan Misti"
+
+[node name="SubLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin/HBox/InfoVBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.7, 0.5, 0.5, 1)
+theme_override_font_sizes/font_size = 14
+text = "🔒 Supera el Nivel 2"
+
+[node name="StatusBadge" type="PanelContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin/HBox"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge_panel")
+
+[node name="BadgeLabel" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelsContainer/Level3Card/Margin/HBox/StatusBadge"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.8, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "BLOQUEADO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Footer" type="HBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BackButton" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Footer"]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+text = "⬅  VOLVER"
+
+[node name="TestUnlockButton" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Footer"]
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+text = "⚡ SIMULAR DESBLOQUEO"
+
+[node name="SettingsOverlay" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -210.0
+offset_right = 270.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsOverlay"]
+layout_mode = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsOverlay/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 32
+text = "⚙️ CONFIGURACIÓN"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="SettingsOverlay/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MusicBox" type="VBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🎵 Volumen de Música"
+
+[node name="MusicValLabel" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="MusicSlider" type="HSlider" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="SfxBox" type="VBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🔊 Efectos de Sonido (SFX)"
+
+[node name="SfxValLabel" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="SfxSlider" type="HSlider" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="Spacer" type="Control" parent="SettingsOverlay/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="SettingsOverlay/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+text = "⬅  VOLVER"
 
 [node name="CreditsOverlay" type="PanelContainer" parent="."]
 visible = false

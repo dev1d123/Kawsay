@@ -8,6 +8,10 @@
 
 config_version=5
 
+[autoload]
+
+AudioManager="*res://Scripts/AudioManager.gd"
+
 [application]
 
 config/name="Kawsay"
