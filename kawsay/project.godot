@@ -22,6 +22,7 @@ GameGlobals="*res://Scripts/GameGlobals.gd"
 
 [display]
 
+window/size/mode=3
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
