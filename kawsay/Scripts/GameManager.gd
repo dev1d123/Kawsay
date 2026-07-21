@@ -28,6 +28,11 @@ func play_at(coord: Vector2i) -> bool:
 		game_won.emit(current_player)
 		return true
 
+	if not board.has_valid_moves():
+		game_over = true
+		game_won.emit(0) # 0 indica empate (draw)
+		return true
+
 	current_player = 2 if current_player == 1 else 1
 	turn_changed.emit(current_player)
 	return true

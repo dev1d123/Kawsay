@@ -375,7 +375,7 @@ func _on_game_won(player_id: int) -> void:
 			unlock_info_label.text = "🔓 ¡Felicidades! Se ha desbloqueado el Nivel %d" % next_lvl
 		else:
 			unlock_info_label.visible = false
-	else:
+	elif player_id == AI_PLAYER_ID:
 		# Música de derrota
 		if get_node_or_null("/root/AudioManager"):
 			get_node("/root/AudioManager").play_music("lose")
@@ -383,6 +383,16 @@ func _on_game_won(player_id: int) -> void:
 		result_title.text = "DERROTA"
 		result_title.add_theme_color_override("font_color", Color(0.9, 0.3, 0.3, 1.0))
 		result_message.text = "La lava ha ganado esta batalla en el %s..." % lvl_name
+		unlock_info_label.visible = false
+	else:
+		# Empate (player_id == 0)
+		# Música de menú para el empate
+		if get_node_or_null("/root/AudioManager"):
+			get_node("/root/AudioManager").play_music("menu")
+
+		result_title.text = "¡EMPATE!"
+		result_title.add_theme_color_override("font_color", Color(0.6, 0.7, 0.85, 1.0))
+		result_message.text = "No quedan movimientos disponibles en el %s." % lvl_name
 		unlock_info_label.visible = false
 
 	var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

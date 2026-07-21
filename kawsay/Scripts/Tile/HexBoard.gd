@@ -65,3 +65,9 @@ func check_winner_at(coord: Vector2i, player_id: int) -> bool:
 		if count >= win_length:
 			return true
 	return false
+
+func has_valid_moves() -> bool:
+	for coord in _valid_coords.keys():
+		if can_place_at(coord):
+			return true
+	return false

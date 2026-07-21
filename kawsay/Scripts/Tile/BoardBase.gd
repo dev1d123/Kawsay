@@ -26,3 +26,8 @@ func check_winner_at(coord: Vector2i, player_id: int) -> bool:
 
 func reset() -> void:
 	push_error("reset() no implementado")
+
+## True si quedan movimientos válidos en el tablero.
+func has_valid_moves() -> bool:
+	push_error("has_valid_moves() no implementado")
+	return false
