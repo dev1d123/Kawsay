@@ -6,6 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Paucarpata – Terrazas Ancestrales"
 generation_mode = 1
+ai_difficulty = 2
 width = 10
 height = 9
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"

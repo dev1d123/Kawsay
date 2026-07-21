@@ -6,6 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Nido de Águilas – Base de Altura"
 generation_mode = 1
+ai_difficulty = 4
 width = 29
 height = 28
 radius = 20

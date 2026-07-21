@@ -6,6 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Alto Selva Alegre – Último Pueblo"
 generation_mode = 2
+ai_difficulty = 3
 width = 20
 height = 16
 radius = 15

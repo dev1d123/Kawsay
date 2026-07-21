@@ -6,6 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Cráter del Misti – Boca Erupción"
 generation_mode = 2
+ai_difficulty = 6
 width = 35
 height = 35
 radius = 20

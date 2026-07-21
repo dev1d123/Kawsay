@@ -65,7 +65,44 @@ func check_winner_at(coord: Vector2i, player_id: int) -> bool:
 		if count >= win_length:
 			return true
 	return false
+	
+func evaluate_placement(coord: Vector2i, for_player: int) -> int:
+	var axes: Array = [[0, 3], [1, 4], [2, 5]]
+	var total_score: int = 0
 
+	for axis in axes:
+		var count := 1
+		var open_ends := 0
+
+		for dir_index in axis:
+			var current: Vector2i = coord
+			while true:
+				var neighbors: Array = _neighbor_map.get(current, [])
+				if neighbors.is_empty():
+					break
+				var next: Vector2i = neighbors[dir_index]
+				if next == INVALID:
+					break
+				var occupant: int = get_piece_at(next)
+				if occupant == for_player:
+					count += 1
+					current = next
+				elif occupant == -1:
+					open_ends += 1
+					break
+				else:
+					break
+
+		# Si esta línea ya no puede llegar a win_length (ni con los espacios abiertos), no vale nada.
+		if count + open_ends < win_length:
+			continue
+
+		# Puntaje exponencial: 3 en línea vale mucho más que 2, etc.
+		total_score += int(pow(count, 3))
+		if count >= win_length:
+			total_score += 100000  # jugada ganadora inmediata
+
+	return total_score
 func has_valid_moves() -> bool:
 	for coord in _valid_coords.keys():
 		if can_place_at(coord):

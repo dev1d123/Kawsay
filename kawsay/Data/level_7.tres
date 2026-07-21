@@ -6,6 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Yanahuara – Mirador de la Ciudad"
 generation_mode = 2
+ai_difficulty = 2
 width = 15
 height = 15
 radius = 10

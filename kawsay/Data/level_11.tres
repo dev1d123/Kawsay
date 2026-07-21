@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_eb8a2")
 level_name = "Los Pastores – Refugio de Ceniza"
+ai_difficulty = 4
 width = 25
 height = 20
 radius = 18

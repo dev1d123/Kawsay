@@ -6,8 +6,6 @@
 script = ExtResource("1_eb8a2")
 level_name = "Yumina – Andenes Verdes"
 generation_mode = 1
-win_length = 3
-powerup_count = 3
 width = 6
 radius = 3
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"

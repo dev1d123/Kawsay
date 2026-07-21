@@ -6,6 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Pirámides – Campamento de Roca"
 generation_mode = 2
+ai_difficulty = 5
 width = 30
 height = 25
 radius = 20
