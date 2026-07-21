@@ -397,6 +397,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		print("🔥 Tecla 'G' presionada: Lanzando bola de fuego parabólica entre 2 celdas aleatorias...")
 		_launch_test_fireball()
 		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_H:
+		print("🔨 Tecla 'H' presionada: Animando golpe de martillo en celda aleatoria...")
+		_launch_test_hammer()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Z:
+		print("🌧️ Tecla 'Z' presionada: Iniciando efecto de lluvia 3D en celda aleatoria (3 seg)...")
+		_launch_test_rain()
+		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
 		var world_pos: Vector2 = get_global_mouse_position()
@@ -407,193 +415,29 @@ func _unhandled_input(event: InputEvent) -> void:
 func _launch_test_fireball() -> void:
 	if _board_coords.size() < 2:
 		return
-		
 	var coords_copy = _board_coords.duplicate()
 	coords_copy.shuffle()
-	var origin_cell: Vector2i = coords_copy[0]
-	var target_cell: Vector2i = coords_copy[1]
-	
-	var start_world = tile_map_layer.map_to_local(origin_cell)
-	var target_world = tile_map_layer.map_to_local(target_cell)
-	
-	var fireball_node := Node2D.new()
-	fireball_node.position = start_world
-	tile_map_layer.add_child(fireball_node)
-	
-	# 1. Núcleo denso de partículas (sin sprites estáticos)
-	var core_particles := CPUParticles2D.new()
-	core_particles.amount = 50
-	core_particles.lifetime = 0.25
-	core_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
-	core_particles.emission_sphere_radius = 4.0
-	core_particles.spread = 180.0
-	core_particles.gravity = Vector2.ZERO
-	core_particles.initial_velocity_min = 10.0
-	core_particles.initial_velocity_max = 35.0
-	core_particles.scale_amount_min = 8.0
-	core_particles.scale_amount_max = 16.0
-	
-	var core_gradient := Gradient.new()
-	core_gradient.set_color(0, Color(2.5, 2.5, 2.0, 1.0))
-	core_gradient.add_point(0.5, Color(1.0, 0.7, 0.1, 0.9))
-	core_gradient.set_color(1, Color(1.0, 0.3, 0.0, 0.0))
-	core_particles.color_ramp = core_gradient
-	core_particles.z_index = 22
-	fireball_node.add_child(core_particles)
-	
-	# 2. Cola ardiente de fuego y humo
-	var trail_particles := CPUParticles2D.new()
-	trail_particles.amount = 60
-	trail_particles.lifetime = 0.5
-	trail_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
-	trail_particles.emission_sphere_radius = 7.0
-	trail_particles.spread = 45.0
-	trail_particles.gravity = Vector2(0, -60)
-	trail_particles.initial_velocity_min = 30.0
-	trail_particles.initial_velocity_max = 80.0
-	trail_particles.scale_amount_min = 6.0
-	trail_particles.scale_amount_max = 18.0
-	
-	var trail_gradient := Gradient.new()
-	trail_gradient.set_color(0, Color(1.0, 0.9, 0.3, 1.0))
-	trail_gradient.add_point(0.3, Color(1.0, 0.4, 0.0, 0.9))
-	trail_gradient.add_point(0.7, Color(0.7, 0.1, 0.0, 0.5))
-	trail_gradient.set_color(1, Color(0.12, 0.12, 0.12, 0.0))
-	trail_particles.color_ramp = trail_gradient
-	trail_particles.z_index = 20
-	fireball_node.add_child(trail_particles)
-	
-	# 3. Chispas voladoras al frente
-	var spark_particles := CPUParticles2D.new()
-	spark_particles.amount = 25
-	spark_particles.lifetime = 0.35
-	spark_particles.spread = 75.0
-	spark_particles.gravity = Vector2(0, 30)
-	spark_particles.initial_velocity_min = 60.0
-	spark_particles.initial_velocity_max = 140.0
-	spark_particles.scale_amount_min = 2.0
-	spark_particles.scale_amount_max = 5.0
-	
-	var spark_gradient := Gradient.new()
-	spark_gradient.set_color(0, Color(1.0, 1.0, 0.6, 1.0))
-	spark_gradient.set_color(1, Color(1.0, 0.4, 0.0, 0.0))
-	spark_particles.color_ramp = spark_gradient
-	spark_particles.z_index = 21
-	fireball_node.add_child(spark_particles)
-	
-	# Parámetros del vuelo parabólico
-	var distance = start_world.distance_to(target_world)
-	var max_arc_height = clamp(distance * 0.45, 100.0, 260.0)
-	var flight_duration = clamp(distance / 450.0, 0.6, 1.2)
-	
-	var tween = create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_method(func(t: float):
-		if not is_instance_valid(fireball_node):
-			return
-		var current_pos = start_world.lerp(target_world, t)
-		var arc_y = 4.0 * max_arc_height * t * (1.0 - t)
-		var pos_now = Vector2(current_pos.x, current_pos.y - arc_y)
-		fireball_node.position = pos_now
-		
-		# Inclinación según tangente de la curva
-		var next_t = min(t + 0.02, 1.0)
-		var next_pos_base = start_world.lerp(target_world, next_t)
-		var next_arc_y = 4.0 * max_arc_height * next_t * (1.0 - next_t)
-		var next_pos = Vector2(next_pos_base.x, next_pos_base.y - next_arc_y)
-		if pos_now.distance_squared_to(next_pos) > 0.1:
-			fireball_node.rotation = (next_pos - pos_now).angle()
-	, 0.0, 1.0, flight_duration)
-	
-	tween.chain().tween_callback(func():
-		if is_instance_valid(fireball_node):
-			fireball_node.queue_free()
-		_spawn_fireball_explosion_particles(target_world)
-	)
+	var start_world = tile_map_layer.map_to_local(coords_copy[0])
+	var target_world = tile_map_layer.map_to_local(coords_copy[1])
+	ParticleEffects.launch_fireball(tile_map_layer, start_world, target_world)
 
-func _spawn_fireball_explosion_particles(world_pos: Vector2) -> void:
-	var container := Node2D.new()
-	container.position = world_pos
-	tile_map_layer.add_child(container)
-	
-	# Capa 1: Ráfaga de Onda Expansiva (Flash & Sparks)
-	var burst := CPUParticles2D.new()
-	burst.emitting = false
-	burst.one_shot = true
-	burst.amount = 80
-	burst.lifetime = 0.75
-	burst.explosiveness = 0.98
-	burst.spread = 180.0
-	burst.gravity = Vector2(0, 80)
-	burst.initial_velocity_min = 200.0
-	burst.initial_velocity_max = 420.0
-	burst.scale_amount_min = 6.0
-	burst.scale_amount_max = 18.0
-	
-	var burst_grad := Gradient.new()
-	burst_grad.set_color(0, Color(2.5, 2.5, 2.0, 1.0))
-	burst_grad.add_point(0.25, Color(1.0, 0.8, 0.2, 1.0))
-	burst_grad.add_point(0.65, Color(0.9, 0.25, 0.0, 0.8))
-	burst_grad.set_color(1, Color(0.2, 0.05, 0.0, 0.0))
-	burst.color_ramp = burst_grad
-	burst.z_index = 25
-	container.add_child(burst)
-	
-	# Capa 2: Chispas y Ascuas que vuelan hacia arriba (Embers)
-	var embers := CPUParticles2D.new()
-	embers.emitting = false
-	embers.one_shot = true
-	embers.amount = 40
-	embers.lifetime = 1.1
-	embers.explosiveness = 0.8
-	embers.spread = 110.0
-	embers.direction = Vector2(0, -1)
-	embers.gravity = Vector2(0, 160)
-	embers.initial_velocity_min = 140.0
-	embers.initial_velocity_max = 280.0
-	embers.scale_amount_min = 3.0
-	embers.scale_amount_max = 6.0
-	
-	var embers_grad := Gradient.new()
-	embers_grad.set_color(0, Color(1.0, 0.9, 0.4, 1.0))
-	embers_grad.add_point(0.5, Color(1.0, 0.4, 0.0, 0.9))
-	embers_grad.set_color(1, Color(0.6, 0.1, 0.0, 0.0))
-	embers.color_ramp = embers_grad
-	embers.z_index = 26
-	container.add_child(embers)
-	
-	# Capa 3: Penacho de Humo Oscuro (Smoke Plume)
-	var smoke := CPUParticles2D.new()
-	smoke.emitting = false
-	smoke.one_shot = true
-	smoke.amount = 30
-	smoke.lifetime = 1.3
-	smoke.explosiveness = 0.75
-	smoke.spread = 80.0
-	smoke.direction = Vector2(0, -1)
-	smoke.gravity = Vector2(0, -90)
-	smoke.initial_velocity_min = 40.0
-	smoke.initial_velocity_max = 110.0
-	smoke.scale_amount_min = 12.0
-	smoke.scale_amount_max = 24.0
-	
-	var smoke_grad := Gradient.new()
-	smoke_grad.set_color(0, Color(0.3, 0.3, 0.35, 0.7))
-	smoke_grad.add_point(0.5, Color(0.18, 0.18, 0.22, 0.5))
-	smoke_grad.set_color(1, Color(0.08, 0.08, 0.1, 0.0))
-	smoke.color_ramp = smoke_grad
-	smoke.z_index = 24
-	container.add_child(smoke)
-	
-	# Disparar emisión
-	burst.emitting = true
-	embers.emitting = true
-	smoke.emitting = true
-	
-	# Sonido de explosión comentado por el momento
-	# if get_node_or_null("/root/AudioManager"):
-	# 	get_node("/root/AudioManager").play_sfx("explosion")
-		
-	get_tree().create_timer(1.6).timeout.connect(container.queue_free)
+func _launch_test_hammer() -> void:
+	if _board_coords.is_empty():
+		return
+	var coords_copy = _board_coords.duplicate()
+	coords_copy.shuffle()
+	var target_cell: Vector2i = coords_copy[0]
+	var cell_local_pos: Vector2 = tile_map_layer.map_to_local(target_cell)
+	ParticleEffects.play_hammer_strike(tile_map_layer, cell_local_pos)
+
+func _launch_test_rain() -> void:
+	if _board_coords.is_empty():
+		return
+	var coords_copy = _board_coords.duplicate()
+	coords_copy.shuffle()
+	var target_cell: Vector2i = coords_copy[0]
+	var cell_local_pos: Vector2 = tile_map_layer.map_to_local(target_cell)
+	ParticleEffects.play_rain_effect(tile_map_layer, cell_local_pos)
 
 func _process(_delta: float) -> void:
 	if _roulette_active or not game or game.game_over or get_tree().paused:
@@ -635,32 +479,6 @@ func _get_powerup_texture(type: String) -> Texture2D:
 	atlas_tex.region = Rect2(coord.x * 122, coord.y * 142, 122, 142)
 	return atlas_tex
 
-func _spawn_powerup_pickup_particles(screen_pos: Vector2) -> void:
-	var particles := CPUParticles2D.new()
-	particles.global_position = screen_pos
-	particles.emitting = false
-	particles.one_shot = true
-	particles.amount = 45
-	particles.lifetime = 0.85
-	particles.explosiveness = 0.95
-	particles.spread = 180.0
-	particles.gravity = Vector2(0, 140)
-	particles.initial_velocity_min = 140.0
-	particles.initial_velocity_max = 260.0
-	particles.scale_amount_min = 5.0
-	particles.scale_amount_max = 10.0
-	
-	var gradient := Gradient.new()
-	gradient.set_color(0, Color(1.0, 0.9, 0.3, 1.0))
-	gradient.add_point(0.5, Color(1.0, 0.5, 0.1, 1.0))
-	gradient.set_color(1, Color(0.9, 0.2, 0.0, 0.0))
-	particles.color_ramp = gradient
-	
-	particles.z_index = 25
-	hud.add_child(particles)
-	particles.emitting = true
-	
-	get_tree().create_timer(1.2).timeout.connect(particles.queue_free)
 
 func _init_powerups_hud() -> void:
 	var slots_hbox = hud.get_node_or_null("BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox")
@@ -891,7 +709,7 @@ func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 			star_screen_pos = tile_map_layer.map_to_local(coord)
 			
 		# Crear efecto de partículas muy notorio en la posición
-		_spawn_powerup_pickup_particles(star_screen_pos)
+		ParticleEffects.spawn_powerup_pickup_particles(hud, star_screen_pos)
 		
 		# Si la ventana emergente estaba abierta sobre esta celda, cerrarla
 		if _hovered_board_cell == coord:
