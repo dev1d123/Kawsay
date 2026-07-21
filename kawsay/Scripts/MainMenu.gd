@@ -96,6 +96,9 @@ func _ready() -> void:
 	_setup_button_hover_effects(settings_back_button)
 	_setup_button_hover_effects(level_select_back_button)
 
+	# Aplicar texturas con tiling de sillar.png a las opciones del menú
+	_apply_sillar_tiling_styles()
+
 	# Construir tarjetas dinámicas de nivel
 	_build_level_cards()
 
@@ -105,6 +108,78 @@ func _ready() -> void:
 	var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(main_menu_container, "modulate:a", 1.0, 0.6)
 	tween.tween_property(main_menu_container, "position:y", main_menu_container.position.y - 20, 0.6)
+
+func _apply_sillar_tiling_to_button(btn: Button, tint_normal: Color, tint_hover: Color, text_color: Color = Color(0.12, 0.14, 0.20)) -> void:
+	if not btn:
+		return
+		
+	var tex = load("res://Sprites/Prueba/sillar.png")
+	if not tex:
+		return
+		
+	var sillar_rect: TextureRect = btn.get_node_or_null("SillarBG")
+	if not sillar_rect:
+		sillar_rect = TextureRect.new()
+		sillar_rect.name = "SillarBG"
+		sillar_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sillar_rect.texture = tex
+		sillar_rect.stretch_mode = TextureRect.STRETCH_TILE
+		sillar_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		btn.add_child(sillar_rect)
+		btn.move_child(sillar_rect, 0)
+		
+	# Escala diminuta (0.06) para que los bloques de sillar sean muy pequeños y se repitan decenas de veces
+	var tile_scale = 0.06
+	sillar_rect.scale = Vector2(tile_scale, tile_scale)
+	sillar_rect.self_modulate = tint_normal
+	
+	# Colores de texto oscuros para máximo contraste y legibilidad sobre tonos pastel
+	btn.add_theme_color_override("font_color", text_color)
+	btn.add_theme_color_override("font_hover_color", text_color)
+	btn.add_theme_color_override("font_pressed_color", text_color)
+	btn.add_theme_color_override("font_focus_color", text_color)
+	
+	var update_size = func():
+		if is_instance_valid(btn) and is_instance_valid(sillar_rect):
+			sillar_rect.size = btn.size / tile_scale
+			
+	update_size.call()
+	if not btn.resized.is_connected(update_size):
+		btn.resized.connect(update_size)
+		
+	btn.mouse_entered.connect(func():
+		if is_instance_valid(sillar_rect):
+			sillar_rect.self_modulate = tint_hover
+	)
+	btn.mouse_exited.connect(func():
+		if is_instance_valid(sillar_rect):
+			sillar_rect.self_modulate = tint_normal
+	)
+
+func _apply_sillar_tiling_styles() -> void:
+	# Botón JUGAR (Pastel Menta Suave)
+	_apply_sillar_tiling_to_button(
+		play_button,
+		Color(0.68, 0.88, 0.78, 0.98),
+		Color(0.78, 0.95, 0.86, 1.0),
+		Color(0.08, 0.25, 0.18)
+	)
+	
+	# Botones Generales (Pastel Crema / Sillar de Arequipa Claro)
+	var norm_color = Color(0.92, 0.90, 0.85, 0.98)
+	var hov_color = Color(0.98, 0.96, 0.92, 1.0)
+	var dark_txt = Color(0.16, 0.16, 0.22)
+	
+	for btn in [settings_button, credits_button, help_button, credits_back_button, settings_back_button, level_select_back_button, test_unlock_button]:
+		_apply_sillar_tiling_to_button(btn, norm_color, hov_color, dark_txt)
+		
+	# Botón SALIR (Pastel Coral / Rosado Suave)
+	_apply_sillar_tiling_to_button(
+		quit_button,
+		Color(0.94, 0.72, 0.74, 0.98),
+		Color(0.98, 0.82, 0.84, 1.0),
+		Color(0.38, 0.12, 0.15)
+	)
 
 func _build_level_cards() -> void:
 	for child in levels_container.get_children():
