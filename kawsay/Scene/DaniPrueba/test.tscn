@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dol25vpnc7h1n"]
+
+[ext_resource type="Script" uid="uid://dol8m6pfdck3n" path="res://Scripts/Level/TestBoardGen.gd" id="1_gajdp"]
+
+[node name="Test" type="Node2D" unique_id=1326966272]
+script = ExtResource("1_gajdp")
+mode = "Random"
