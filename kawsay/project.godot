@@ -8,16 +8,17 @@
 
 config_version=5
 
-[autoload]
-
-AudioManager="*res://Scripts/AudioManager.gd"
-
 [application]
 
 config/name="Kawsay"
 run/main_scene="res://Scene/MenuPrincipal/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+AudioManager="*res://Scripts/AudioManager.gd"
+GameGlobals="*res://Scripts/GameGlobals.gd"
 
 [display]
 

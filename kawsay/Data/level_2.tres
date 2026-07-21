@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="LevelConfig" format=3 uid="uid://krf5racyr0mk"]
+[gd_resource type="Resource" script_class="LevelConfig" format=3]
 
 [ext_resource type="Script" uid="uid://cnj7lywfb6vtt" path="res://Scripts/Level/LevelConfig.gd" id="1_eb8a2"]
 
 [resource]
 script = ExtResource("1_eb8a2")
-level_name = "Volcan Pichu Pichu"
-generation_mode = 2
+level_name = "Volcan Chachani"
+generation_mode = 1
 win_length = 4
-ai_difficulty = 0
-radius = 3
-width = 7
-height = 6
+ai_difficulty = 1
+radius = 4
+width = 8
+height = 7
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"

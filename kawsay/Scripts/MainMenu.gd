@@ -47,6 +47,10 @@ var _log_tween: Tween
 var max_unlocked_level: int = 1
 
 func _ready() -> void:
+	# Iniciar música de menú
+	if get_node_or_null("/root/AudioManager"):
+		get_node("/root/AudioManager").play_music("menu")
+
 	# Configuración inicial de vistas secundarias
 	credits_panel.visible = false
 	credits_panel.modulate.a = 0.0
@@ -63,6 +67,10 @@ func _ready() -> void:
 	if log_banner:
 		log_banner.visible = false
 		log_banner.modulate.a = 0.0
+
+	# Sincronizar estado global de progreso
+	if get_node_or_null("/root/GameGlobals"):
+		max_unlocked_level = get_node("/root/GameGlobals").max_unlocked_level
 
 	# Conexión del Singleton de Audio con los HSliders
 	if Engine.has_singleton("AudioManager") or get_node_or_null("/root/AudioManager"):
@@ -252,7 +260,19 @@ func _on_level_card_pressed(level_num: int, level_name: String) -> void:
 		3: card_btn = level3_button
 
 	if level_num <= max_unlocked_level:
-		print("Nivel seleccionado: %s (Nivel %d)" % [level_name, level_num])
+		var config_path = "res://Data/level_%d.tres" % level_num
+		var level_res: LevelConfig = load(config_path) as LevelConfig
+		if level_res:
+			print("Nivel seleccionado: %s (Nivel %d) [Recurso: %s | Modo: %d | Dificultad IA: %d]" % [
+				level_res.level_name,
+				level_num,
+				config_path,
+				level_res.generation_mode,
+				level_res.ai_difficulty
+			])
+		else:
+			print("Nivel seleccionado: %s (Nivel %d)" % [level_name, level_num])
+
 		_show_log_banner("Nivel %d: %s" % [level_num, level_name])
 
 		if card_btn:
@@ -260,6 +280,10 @@ func _on_level_card_pressed(level_num: int, level_name: String) -> void:
 			var bounce_tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 			bounce_tween.tween_property(card_btn, "scale", Vector2(1.1, 1.1), 0.12)
 			bounce_tween.tween_property(card_btn, "scale", Vector2(1.0, 1.0), 0.15)
+			bounce_tween.chain().tween_callback(func():
+				if get_node_or_null("/root/GameGlobals"):
+					get_node("/root/GameGlobals").select_and_start_level(level_num)
+			)
 	else:
 		print("Nivel %d bloqueado (%s): Debes superar el nivel anterior primero." % [level_num, level_name])
 		_show_log_banner("🔒 Completa el Nivel %d primero" % (level_num - 1))
@@ -302,6 +326,9 @@ func _on_test_unlock_pressed() -> void:
 	max_unlocked_level += 1
 	if max_unlocked_level > 3:
 		max_unlocked_level = 1
+
+	if get_node_or_null("/root/GameGlobals"):
+		get_node("/root/GameGlobals").max_unlocked_level = max_unlocked_level
 
 	_update_level_cards_ui()
 
