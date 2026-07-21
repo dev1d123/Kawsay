@@ -1,0 +1,882 @@
+[gd_scene format=4 uid="uid://dhv077jha1l2g"]
+
+[ext_resource type="Texture2D" uid="uid://146tigk4q3dm" path="res://Sprites/Prueba/hexagonAll_sheet.png" id="1_08qb7"]
+[ext_resource type="Script" uid="uid://dyi5x8wupivfr" path="res://Scripts/Tile/BoardView.gd" id="1_n4sht"]
+[ext_resource type="Resource" uid="uid://krf5racyr0mk" path="res://Data/level_1.tres" id="2_k1bfk"]
+[ext_resource type="Script" uid="uid://bjo7jt45y20ph" path="res://Scripts/Others/Camera_Controller.gd" id="4_uf6qd"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4sht"]
+texture = ExtResource("1_08qb7")
+texture_region_size = Vector2i(122, 142)
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+9:4/0 = 0
+10:4/0 = 0
+11:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+8:5/0 = 0
+9:5/0 = 0
+10:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+7:6/0 = 0
+8:6/0 = 0
+9:6/0 = 0
+10:6/0 = 0
+0:7/0 = 0
+1:7/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
+5:7/0 = 0
+6:7/0 = 0
+8:7/0 = 0
+9:7/0 = 0
+10:7/0 = 0
+2:8/0 = 0
+3:8/0 = 0
+4:8/0 = 0
+5:8/0 = 0
+10:8/0 = 0
+1:9/0 = 0
+2:9/0 = 0
+3:9/0 = 0
+4:9/0 = 0
+5:9/0 = 0
+9:9/0 = 0
+10:9/0 = 0
+0:10/0 = 0
+1:10/0 = 0
+2:10/0 = 0
+3:10/0 = 0
+4:10/0 = 0
+5:10/0 = 0
+6:10/0 = 0
+7:10/0 = 0
+8:10/0 = 0
+9:10/0 = 0
+10:10/0 = 0
+0:11/0 = 0
+1:11/0 = 0
+2:11/0 = 0
+3:11/0 = 0
+4:11/0 = 0
+5:11/0 = 0
+6:11/0 = 0
+7:11/0 = 0
+8:11/0 = 0
+9:11/0 = 0
+10:11/0 = 0
+0:12/0 = 0
+1:12/0 = 0
+2:12/0 = 0
+3:12/0 = 0
+4:12/0 = 0
+5:12/0 = 0
+6:12/0 = 0
+7:12/0 = 0
+8:12/0 = 0
+9:12/0 = 0
+10:12/0 = 0
+0:13/0 = 0
+1:13/0 = 0
+2:13/0 = 0
+3:13/0 = 0
+4:13/0 = 0
+5:13/0 = 0
+6:13/0 = 0
+7:13/0 = 0
+8:13/0 = 0
+9:13/0 = 0
+10:13/0 = 0
+1:0/0 = 0
+0:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+6:8/0 = 0
+7:8/0 = 0
+7:7/0 = 0
+8:8/0 = 0
+9:8/0 = 0
+8:9/0 = 0
+7:9/0 = 0
+6:9/0 = 0
+1:8/0 = 0
+0:8/0 = 0
+0:9/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_xrivr"]
+tile_shape = 3
+tile_size = Vector2i(122, 142)
+sources/0 = SubResource("TileSetAtlasSource_n4sht")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hud_header"]
+bg_color = Color(0.0980392, 0.117647, 0.176471, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 0.7)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hud"]
+bg_color = Color(0.14902, 0.176471, 0.258824, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.290196, 0.34902, 0.490196, 0.9)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hud_hover"]
+bg_color = Color(0.22, 0.26, 0.38, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.960784, 0.745098, 0.278431, 0.3)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bottom_bar"]
+bg_color = Color(0.0823529, 0.0980392, 0.14902, 0.95)
+border_width_top = 3
+border_color = Color(0.960784, 0.745098, 0.278431, 0.6)
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_category_card"]
+bg_color = Color(0.121569, 0.141176, 0.211765, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.3, 0.42, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slot_item"]
+bg_color = Color(0.180392, 0.207843, 0.309804, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.45, 0.6, 0.4)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.129412, 0.152941, 0.223529, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 0.7)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_size = 18
+
+[node name="Tile" type="Node2D" unique_id=1535942967 node_paths=PackedStringArray("tile_map_layer", "camera")]
+script = ExtResource("1_n4sht")
+tile_map_layer = NodePath("TileMapLayer")
+level_config = ExtResource("2_k1bfk")
+camera = NodePath("Camera2D")
+empty_atlas_coord = Vector2i(5, 1)
+player1_atlas_coord = Vector2i(3, 0)
+player2_atlas_coord = Vector2i(8, 1)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=226362489]
+tile_map_data = PackedByteArray("AAAAAAIAAAACAAAAAAAAAAEAAAACAAAAAAABAAAAAAACAAAAAAAAAAAAAAACAAAAAAAAAAMAAAABAAAAAAABAAIAAAABAAAAAAABAAEAAAACAAAAAAACAAAAAAACAAAAAAACAAEAAAABAAAAAAADAAIAAAACAAAAAAACAAIAAAABAAAAAAACAAMAAAABAAAAAAABAAMAAAABAAAAAAABAAQAAAABAAAAAAAAAAQAAAACAAAAAAABAAUAAAABAAAAAAACAAQAAAABAAAAAAAAAAUAAAABAAAAAAACAAUAAAABAAAAAAADAAQAAAABAAAAAAADAAMAAAABAAAAAAADAAEAAAABAAAAAAADAAAAAAACAAAAAAAEAAIAAAABAAAAAAAEAAQAAAABAAAAAAADAAUAAAABAAAAAAAEAAAAAAACAAAAAAAEAAUAAAABAAAAAAAFAAQAAAABAAAAAAAFAAUAAAABAAAAAAAGAAQAAAABAAAAAAAGAAAAAAABAAAAAAAFAAAAAAABAAAAAAAEAAEAAAABAAAAAAAFAAIAAAABAAAAAAAEAAMAAAABAAAAAAAFAAMAAAABAAAAAAAGAAIAAAABAAAAAAAFAAEAAAABAAAAAAA=")
+tile_set = SubResource("TileSet_xrivr")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1105377268]
+script = ExtResource("4_uf6qd")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=977286168]
+
+[node name="TopCenterBanner" type="PanelContainer" parent="HUD" unique_id=731848216]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 16.0
+offset_right = 220.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hud_header")
+
+[node name="Margin" type="MarginContainer" parent="HUD/TopCenterBanner" unique_id=1730618209]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="HUD/TopCenterBanner/Margin" unique_id=534594698]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="LevelNameLabel" type="Label" parent="HUD/TopCenterBanner/Margin/VBox" unique_id=827114425]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 20
+text = "Volcan Pichu Pichu (Nivel 1)"
+horizontal_alignment = 1
+
+[node name="ObjectiveLabel" type="Label" parent="HUD/TopCenterBanner/Margin/VBox" unique_id=1794495038]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.7, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "🎯 Objetivo: Conecta 4 fichas en línea para ganar"
+horizontal_alignment = 1
+
+[node name="TopRightButtons" type="HBoxContainer" parent="HUD" unique_id=906897602]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -230.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 60.0
+grow_horizontal = 0
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="SelectorButton" type="Button" parent="HUD/TopRightButtons" unique_id=1131573697]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+tooltip_text = "Selector de Niveles"
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "🏠"
+
+[node name="RestartButton" type="Button" parent="HUD/TopRightButtons" unique_id=161257372]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+tooltip_text = "Reiniciar Nivel"
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "🔄"
+
+[node name="SettingsButton" type="Button" parent="HUD/TopRightButtons" unique_id=804790834]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+tooltip_text = "Configuración de Audio"
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "⚙️"
+
+[node name="PauseButton" type="Button" parent="HUD/TopRightButtons" unique_id=945163378]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+tooltip_text = "Pausar Juego"
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "⏸️"
+
+[node name="BottomCategoryBar" type="PanelContainer" parent="HUD" unique_id=807622399]
+custom_minimum_size = Vector2(0, 110)
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -110.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bottom_bar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/BottomCategoryBar" unique_id=1585384875]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="CategoriesHBox" type="HBoxContainer" parent="HUD/BottomCategoryBar/Margin" unique_id=1931199995]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CartasSection" type="PanelContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox" unique_id=969943381]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_category_card")
+
+[node name="Margin" type="MarginContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection" unique_id=832215324]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin" unique_id=234241406]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="HeaderLabel" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox" unique_id=1201667696]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 14
+text = "🎴 CARTAS"
+horizontal_alignment = 1
+
+[node name="SlotsHBox" type="HBoxContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox" unique_id=1841938025]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Slot1" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox/SlotsHBox" unique_id=1022028616]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox/SlotsHBox/Slot1" unique_id=1895950029]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Carta I"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox/SlotsHBox" unique_id=565837369]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox/SlotsHBox/Slot2" unique_id=694376842]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Carta II"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox/SlotsHBox" unique_id=525149790]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/CartasSection/Margin/VBox/SlotsHBox/Slot3" unique_id=1820999741]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Carta III"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PowerupsSection" type="PanelContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox" unique_id=817266931]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_category_card")
+
+[node name="Margin" type="MarginContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection" unique_id=853453362]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin" unique_id=1827900780]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="HeaderLabel" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox" unique_id=1418593946]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 14
+text = "⚡ POWERUPS"
+horizontal_alignment = 1
+
+[node name="SlotsHBox" type="HBoxContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox" unique_id=1525964955]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Slot1" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox" unique_id=592597083]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox/Slot1" unique_id=1667222893]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Rayo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox" unique_id=2111358194]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox/Slot2" unique_id=914841659]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Escudo"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox" unique_id=213997262]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox/Slot3" unique_id=268189814]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Fuego"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ArcanosSection" type="PanelContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox" unique_id=448715596]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_category_card")
+
+[node name="Margin" type="MarginContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection" unique_id=2082395948]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin" unique_id=1357053766]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="HeaderLabel" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox" unique_id=469037976]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.5, 0.95, 1)
+theme_override_font_sizes/font_size = 14
+text = "🔮 ARCANOS"
+horizontal_alignment = 1
+
+[node name="SlotsHBox" type="HBoxContainer" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox" unique_id=537264095]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Slot1" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox/SlotsHBox" unique_id=1249447984]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox/SlotsHBox/Slot1" unique_id=213699253]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Sol"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox/SlotsHBox" unique_id=1554886654]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox/SlotsHBox/Slot2" unique_id=1313943717]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Luna"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="Panel" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox/SlotsHBox" unique_id=1705026777]
+custom_minimum_size = Vector2(50, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot_item")
+
+[node name="Label" type="Label" parent="HUD/BottomCategoryBar/Margin/CategoriesHBox/ArcanosSection/Margin/VBox/SlotsHBox/Slot3" unique_id=471807868]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.6, 0.65, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "Estrella"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseOverlay" type="Control" parent="HUD" unique_id=1336482166]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="HUD/PauseOverlay" unique_id=952374772]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.05, 0.08, 0.8)
+
+[node name="VBox" type="VBoxContainer" parent="HUD/PauseOverlay" unique_id=1338726504]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -80.0
+offset_right = 250.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/PauseOverlay/VBox" unique_id=1540641170]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 42
+text = "⏸️ JUEGO EN PAUSA"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="HUD/PauseOverlay/VBox" unique_id=77322692]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.85, 0.95, 1)
+theme_override_font_sizes/font_size = 18
+text = "Haz click en cualquier parte de la pantalla para reanudar"
+horizontal_alignment = 1
+
+[node name="SettingsOverlay" type="PanelContainer" parent="HUD" unique_id=661485902]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -210.0
+offset_right = 270.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/SettingsOverlay" unique_id=1415922409]
+layout_mode = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/SettingsOverlay/MarginContainer" unique_id=704191925]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer" unique_id=1619573137]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 32
+text = "⚙️ CONFIGURACIÓN DE AUDIO"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer" unique_id=348843610]
+layout_mode = 2
+
+[node name="MusicBox" type="VBoxContainer" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer" unique_id=821490771]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/MusicBox" unique_id=2061136484]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox" unique_id=1808252495]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🎵 Volumen de Música"
+
+[node name="MusicValLabel" type="Label" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox" unique_id=497926656]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="MusicSlider" type="HSlider" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/MusicBox" unique_id=1370733220]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="SfxBox" type="VBoxContainer" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer" unique_id=638403840]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/SfxBox" unique_id=626527074]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox" unique_id=1797881742]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🔊 Efectos de Sonido (SFX)"
+
+[node name="SfxValLabel" type="Label" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox" unique_id=1219269235]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="SfxSlider" type="HSlider" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer/SfxBox" unique_id=583300818]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="Spacer" type="Control" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer" unique_id=639965506]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="HUD/SettingsOverlay/MarginContainer/VBoxContainer" unique_id=1116408908]
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "⬅  VOLVER"
+
+[node name="ResultDialog" type="PanelContainer" parent="HUD" unique_id=1559299916]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -170.0
+offset_right = 250.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="Margin" type="MarginContainer" parent="HUD/ResultDialog" unique_id=2012862517]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 26
+
+[node name="VBox" type="VBoxContainer" parent="HUD/ResultDialog/Margin" unique_id=989067556]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="ResultTitle" type="Label" parent="HUD/ResultDialog/Margin/VBox" unique_id=1807968453]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 38
+text = "¡VICTORIA!"
+horizontal_alignment = 1
+
+[node name="ResultMessage" type="Label" parent="HUD/ResultDialog/Margin/VBox" unique_id=1251843006]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
+theme_override_font_sizes/font_size = 18
+text = "¡Has conquistado el Volcán Pichu Pichu!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="UnlockInfoLabel" type="Label" parent="HUD/ResultDialog/Margin/VBox" unique_id=1577016022]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 16
+text = "🔓 ¡Se ha desbloqueado el Nivel 2!"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HUD/ResultDialog/Margin/VBox" unique_id=746660283]
+layout_mode = 2
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="HUD/ResultDialog/Margin/VBox" unique_id=1442773327]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="RetryButton" type="Button" parent="HUD/ResultDialog/Margin/VBox/ButtonsHBox" unique_id=150697939]
+custom_minimum_size = Vector2(140, 46)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "🔄 REINTENTAR"
+
+[node name="LevelSelectBtn" type="Button" parent="HUD/ResultDialog/Margin/VBox/ButtonsHBox" unique_id=1722329823]
+custom_minimum_size = Vector2(230, 46)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_hud")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hud_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hud_hover")
+text = "📜 SELECTOR DE NIVELES"
