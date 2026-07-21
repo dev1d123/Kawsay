@@ -9,6 +9,12 @@ const SOURCE_ID := 0
 @export var empty_atlas_coord: Vector2i = Vector2i(0, 0)
 @export var player1_atlas_coord: Vector2i = Vector2i(1, 0)  # IA / lava / rojo
 @export var player2_atlas_coord: Vector2i = Vector2i(2, 0)  # Tú / restaurado / amarillo
+
+@export var empty_atlas_coords: Array[Vector2i] = []
+@export var player1_atlas_coords: Array[Vector2i] = []
+@export var player2_atlas_coords: Array[Vector2i] = []
+
+var _empty_tile_map: Dictionary = {}
 const AI_PLAYER_ID := 1
 const HUMAN_PLAYER_ID := 2
 const AI_MOVE_DELAY := 0.5
@@ -221,10 +227,31 @@ func _setup_game(coords: Array[Vector2i]) -> void:
 		
 	_maybe_trigger_ai_turn()
 
+func _get_random_empty_coord() -> Vector2i:
+	if not empty_atlas_coords.is_empty():
+		return empty_atlas_coords.pick_random()
+	return empty_atlas_coord
+
+func _get_random_player1_coord() -> Vector2i:
+	if not player1_atlas_coords.is_empty():
+		return player1_atlas_coords.pick_random()
+	return player1_atlas_coord
+
+func _get_random_player2_coord() -> Vector2i:
+	if not player2_atlas_coords.is_empty():
+		return player2_atlas_coords.pick_random()
+	return player2_atlas_coord
+
+func _get_empty_tile_at(coord: Vector2i) -> Vector2i:
+	return _empty_tile_map.get(coord, empty_atlas_coord)
+
 func _draw_board(coords: Array[Vector2i]) -> void:
 	tile_map_layer.clear()
+	_empty_tile_map.clear()
 	for coord in coords:
-		tile_map_layer.set_cell(coord, SOURCE_ID, empty_atlas_coord)
+		var empty_coord: Vector2i = _get_random_empty_coord()
+		_empty_tile_map[coord] = empty_coord
+		tile_map_layer.set_cell(coord, SOURCE_ID, empty_coord)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if game.game_over or get_tree().paused:
@@ -243,7 +270,7 @@ func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 			sprite.queue_free()
 		_highlight_sprites.erase(coord)
 		
-	var atlas_coord: Vector2i = player1_atlas_coord if player_id == 1 else player2_atlas_coord
+	var atlas_coord: Vector2i = _get_random_player1_coord() if player_id == AI_PLAYER_ID else _get_random_player2_coord()
 	tile_map_layer.set_cell(coord, SOURCE_ID, atlas_coord)
 
 func _on_turn_changed(player_id: int) -> void:
@@ -351,12 +378,14 @@ func _highlight_available_cells() -> void:
 		return
 		
 	var texture: Texture2D = source.texture
-	var region: Rect2 = source.get_tile_texture_region(empty_atlas_coord)
 	
 	for coord in _board_coords:
 		if game.board.can_place_at(coord):
 			# Limpiar la celda en el TileMapLayer para que no se dibuje doble
 			tile_map_layer.set_cell(coord, -1)
+			
+			var cell_empty_coord: Vector2i = _get_empty_tile_at(coord)
+			var region: Rect2 = source.get_tile_texture_region(cell_empty_coord)
 			
 			# Crear el Sprite2D de reemplazo y agregarlo
 			var sprite := Sprite2D.new()
@@ -391,6 +420,6 @@ func _clear_highlights() -> void:
 		if is_instance_valid(sprite):
 			sprite.queue_free()
 		if game and game.board and game.board.get_piece_at(coord) == -1:
-			tile_map_layer.set_cell(coord, SOURCE_ID, empty_atlas_coord)
+			tile_map_layer.set_cell(coord, SOURCE_ID, _get_empty_tile_at(coord))
 			
 	_highlight_sprites.clear()

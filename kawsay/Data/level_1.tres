@@ -6,5 +6,8 @@
 script = ExtResource("1_eb8a2")
 level_name = "Volcan Pichu Pichu"
 generation_mode = 2
+win_length = 6
+width = 13
+height = 8
 radius = 3
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"
