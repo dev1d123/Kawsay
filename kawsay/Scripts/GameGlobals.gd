@@ -7,6 +7,8 @@ var selected_level_config: LevelConfig
 const GAME_SCENE_PATH: String = "res://Scene/DaniPrueba/dani.tscn"
 const MAIN_MENU_PATH: String = "res://Scene/MenuPrincipal/main_menu.tscn"
 
+const TOTAL_LEVELS: int = 15
+
 func _ready() -> void:
 	_load_config_for_level(1)
 
@@ -25,7 +27,7 @@ func select_and_start_level(level_num: int) -> void:
 
 func complete_level(level_num: int) -> bool:
 	var newly_unlocked: bool = false
-	if level_num == max_unlocked_level and max_unlocked_level < 3:
+	if level_num == max_unlocked_level and max_unlocked_level < TOTAL_LEVELS:
 		max_unlocked_level += 1
 		newly_unlocked = true
 		print("¡Felicidades! Nivel %d desbloqueado." % max_unlocked_level)

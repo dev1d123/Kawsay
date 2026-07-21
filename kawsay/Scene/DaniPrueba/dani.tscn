@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dhv077jha1l2g"]
 
 [ext_resource type="Script" uid="uid://dyi5x8wupivfr" path="res://Scripts/Tile/BoardView.gd" id="1_n4sht"]
-[ext_resource type="Resource" uid="uid://krf5racyr0mk" path="res://Data/level_1.tres" id="2_k1bfk"]
+[ext_resource type="Resource" uid="uid://b48lf5hbjoudd" path="res://Data/level_1.tres" id="2_k1bfk"]
 [ext_resource type="Texture2D" uid="uid://bdssp7w8vaqey" path="res://Sprites/Prueba/TilesMap.png" id="3_uf6qd"]
 [ext_resource type="Script" uid="uid://bjo7jt45y20ph" path="res://Scripts/Others/Camera_Controller.gd" id="4_uf6qd"]
 
@@ -146,6 +146,9 @@ tile_set = SubResource("TileSet_xrivr")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1105377268]
 script = ExtResource("4_uf6qd")
+zoom_speed = 0.5
+min_zoom = 1.0
+max_zoom = 300.0
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=764549140]
 
