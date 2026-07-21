@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://146tigk4q3dm" path="res://Sprites/Prueba/hexagonAll_sheet.png" id="1_08qb7"]
 [ext_resource type="Script" uid="uid://dyi5x8wupivfr" path="res://Scripts/Tile/BoardView.gd" id="1_n4sht"]
+[ext_resource type="Resource" uid="uid://krf5racyr0mk" path="res://Data/level_1.tres" id="2_k1bfk"]
+[ext_resource type="Script" uid="uid://bjo7jt45y20ph" path="res://Scripts/Others/Camera_Controller.gd" id="4_uf6qd"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_n4sht"]
 texture = ExtResource("1_08qb7")
@@ -171,10 +173,18 @@ tile_shape = 3
 tile_size = Vector2i(122, 142)
 sources/0 = SubResource("TileSetAtlasSource_n4sht")
 
-[node name="Tile" type="Node2D" unique_id=1535942967 node_paths=PackedStringArray("tile_map_layer")]
+[node name="Tile" type="Node2D" unique_id=1535942967 node_paths=PackedStringArray("tile_map_layer", "camera")]
 script = ExtResource("1_n4sht")
 tile_map_layer = NodePath("TileMapLayer")
+level_config = ExtResource("2_k1bfk")
+camera = NodePath("Camera2D")
+empty_atlas_coord = Vector2i(5, 1)
+player1_atlas_coord = Vector2i(3, 0)
+player2_atlas_coord = Vector2i(8, 1)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=226362489]
 tile_map_data = PackedByteArray("AAAAAAIAAAACAAAAAAAAAAEAAAACAAAAAAABAAAAAAACAAAAAAAAAAAAAAACAAAAAAAAAAMAAAABAAAAAAABAAIAAAABAAAAAAABAAEAAAACAAAAAAACAAAAAAACAAAAAAACAAEAAAABAAAAAAADAAIAAAACAAAAAAACAAIAAAABAAAAAAACAAMAAAABAAAAAAABAAMAAAABAAAAAAABAAQAAAABAAAAAAAAAAQAAAACAAAAAAABAAUAAAABAAAAAAACAAQAAAABAAAAAAAAAAUAAAABAAAAAAACAAUAAAABAAAAAAADAAQAAAABAAAAAAADAAMAAAABAAAAAAADAAEAAAABAAAAAAADAAAAAAACAAAAAAAEAAIAAAABAAAAAAAEAAQAAAABAAAAAAADAAUAAAABAAAAAAAEAAAAAAACAAAAAAAEAAUAAAABAAAAAAAFAAQAAAABAAAAAAAFAAUAAAABAAAAAAAGAAQAAAABAAAAAAAGAAAAAAABAAAAAAAFAAAAAAABAAAAAAAEAAEAAAABAAAAAAAFAAIAAAABAAAAAAAEAAMAAAABAAAAAAAFAAMAAAABAAAAAAAGAAIAAAABAAAAAAAFAAEAAAABAAAAAAA=")
 tile_set = SubResource("TileSet_xrivr")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1105377268]
+script = ExtResource("4_uf6qd")

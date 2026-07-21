@@ -3,23 +3,16 @@ extends BoardBase
 
 var _cells: Dictionary = {}
 var _valid_coords: Dictionary = {}
+var _neighbor_map: Dictionary = {}  # coord -> Array de 6 vecinos (o INVALID)
 var win_length: int = 4
 
-const NEIGHBOR_OFFSETS: Array[Vector2i] = [
-	Vector2i(1, 0), Vector2i(-1, 0),
-	Vector2i(0, 1), Vector2i(0, -1),
-	Vector2i(1, -1), Vector2i(-1, 1),
-]
+const INVALID := Vector2i(-99999, -99999)
 
-func _init(valid_coords: Array[Vector2i] = [], required_to_win: int = 4) -> void:
-	set_valid_coords(valid_coords)
-	win_length = required_to_win
-
-## Define qué coordenadas existen en el tablero (llamar antes de jugar).
-func set_valid_coords(coords: Array[Vector2i]) -> void:
-	_valid_coords.clear()
-	for c in coords:
+func _init(valid_coords: Array[Vector2i], neighbor_map: Dictionary, required_to_win: int = 4) -> void:
+	for c in valid_coords:
 		_valid_coords[c] = true
+	_neighbor_map = neighbor_map
+	win_length = required_to_win
 
 func reset() -> void:
 	_cells.clear()
@@ -31,12 +24,13 @@ func can_place_at(coord: Vector2i) -> bool:
 	if not is_valid_empty_cell(coord):
 		return false
 	if _cells.is_empty():
-		return true  # primer movimiento del juego: cualquier celda vale
+		return true
 	return _has_occupied_neighbor(coord)
 
 func _has_occupied_neighbor(coord: Vector2i) -> bool:
-	for offset in NEIGHBOR_OFFSETS:
-		if _cells.has(coord + offset):
+	var neighbors: Array = _neighbor_map.get(coord, [])
+	for n in neighbors:
+		if n != INVALID and _cells.has(n):
 			return true
 	return false
 
@@ -46,21 +40,28 @@ func place_piece(coord: Vector2i, player_id: int) -> bool:
 	_cells[coord] = player_id
 	return true
 
+func undo_piece(coord: Vector2i) -> void:
+	_cells.erase(coord)
+
 func get_piece_at(coord: Vector2i) -> int:
 	return _cells.get(coord, -1)
+
 func check_winner_at(coord: Vector2i, player_id: int) -> bool:
-	const AXES: Array = [
-		[Vector2i(1, 0), Vector2i(-1, 0)],
-		[Vector2i(0, 1), Vector2i(0, -1)],
-		[Vector2i(1, -1), Vector2i(-1, 1)],
-	]
-	for axis in AXES:
+	# Las 3 direcciones opuestas por pares: índices [0..5] del HEX_DIRECTIONS
+	var axes: Array = [[0, 3], [1, 4], [2, 5]]
+	for axis in axes:
 		var count := 1
-		for direction in axis:
-			var current: Vector2i = coord + direction
-			while get_piece_at(current) == player_id:
+		for dir_index in axis:
+			var current: Vector2i = coord
+			while true:
+				var neighbors: Array = _neighbor_map.get(current, [])
+				if neighbors.is_empty():
+					break
+				var next: Vector2i = neighbors[dir_index]
+				if next == INVALID or get_piece_at(next) != player_id:
+					break
 				count += 1
-				current += direction
+				current = next
 		if count >= win_length:
 			return true
 	return false

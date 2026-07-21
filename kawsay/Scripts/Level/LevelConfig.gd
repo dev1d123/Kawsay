@@ -6,7 +6,7 @@ enum GenerationMode { MANUAL, RHOMBUS, HEXAGON, RANDOM }
 @export var level_name: String = "Nivel 1"
 @export var generation_mode: GenerationMode = GenerationMode.RANDOM
 @export var win_length: int = 4
-
+@export var ai_difficulty: AIStrategy.Difficulty = AIStrategy.Difficulty.EASY
 # MANUAL: pintas manualmente esta lista en el Inspector (click derecho -> Add Element)
 @export var manual_coords: Array[Vector2i] = []
 

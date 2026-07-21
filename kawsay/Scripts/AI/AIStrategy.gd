@@ -1,4 +1,3 @@
-# ai_strategy.gd
 class_name AIStrategy
 extends RefCounted
 
@@ -16,6 +15,7 @@ func _init(target_board: BoardBase, ai_player_id: int, human_player_id: int, tar
 	win_length = target_win_length
 
 ## Punto de extensión: cada dificultad sobreescribe esto.
+## Recibe todas las coordenadas del tablero y devuelve la elegida.
 func choose_move(valid_coords: Array[Vector2i]) -> Vector2i:
 	push_error("choose_move() no implementado")
 	return Vector2i.ZERO
