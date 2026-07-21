@@ -7,6 +7,7 @@ script = ExtResource("1_eb8a2")
 level_name = "Volcan Pichu Pichu"
 generation_mode = 2
 win_length = 6
+powerup_count = 2
 width = 13
 height = 8
 radius = 3

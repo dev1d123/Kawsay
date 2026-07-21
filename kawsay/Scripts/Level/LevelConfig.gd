@@ -10,6 +10,8 @@ enum GenerationMode { MANUAL, RHOMBUS, HEXAGON, RANDOM }
 # MANUAL: pintas manualmente esta lista en el Inspector (click derecho -> Add Element)
 @export var manual_coords: Array[Vector2i] = []
 
+@export var powerup_count: int = 3
+
 # RHOMBUS / RANDOM
 @export var width: int = 7
 @export var height: int = 6

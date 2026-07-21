@@ -30,6 +30,54 @@ var _roulette_overlay: ColorRect = null
 var _hover_info_panel: PanelContainer = null
 var _hover_pulse_tween: Tween = null
 
+# Variables y constantes para powerups
+const POWERUP_ATLAS_COORDS = {
+	"asentamiento": Vector2i(0, 1),
+	"restauracion": Vector2i(1, 0),
+	"bloqueo": Vector2i(1, 1),
+	"sobrepoblacion": Vector2i(0, 0)
+}
+
+var _powerup_cells: Dictionary = {} # Vector2i -> String (tipo)
+var _powerup_sprites: Dictionary = {} # Vector2i -> Sprite2D
+var _powerup_popup: PanelContainer = null
+var _powerup_tweens: Array[Tween] = []
+var _hovered_board_cell: Vector2i = Vector2i(-999, -999)
+var _powerup_popup_tween: Tween = null
+
+# Inventarios de powerups
+var _player_powerups: Array[String] = []
+var _ai_powerups: Array[String] = []
+var _ai_powerup_counts: Dictionary = {
+	"asentamiento": 0,
+	"restauracion": 0,
+	"bloqueo": 0,
+	"sobrepoblacion": 0
+}
+
+const POWERUP_DETAILS = {
+	"asentamiento": {
+		"title": "ASENTAMIENTO",
+		"player_desc": "El Player selecciona una casilla a cualquier distancia.\nEfecto: Fogata en el Bosque (sonido de construcción).",
+		"volcan_desc": "Bola de magma.\nEfecto: Explosión."
+	},
+	"restauracion": {
+		"title": "RESTAURACIÓN",
+		"player_desc": "El Player selecciona una celda enemiga y la convierte.\nEfecto: Lluvia sobre el Agua (sonido de lluvia).",
+		"volcan_desc": "Provoca fuegos en celdas enemigas.\nEfecto: Sonidos de quemaduras."
+	},
+	"bloqueo": {
+		"title": "BLOQUEO",
+		"player_desc": "El Player bloquea una celda por x turnos.\nEfecto: Martillazo en la Fuente (sonido de construcción).",
+		"volcan_desc": "Expansión de lava y bloqueo de celda.\nEfecto: Sonido de lava."
+	},
+	"sobrepoblacion": {
+		"title": "SOBREPOBLACIÓN",
+		"player_desc": "El Player ocupa dos casillas disponibles aleatoriamente.\nEfecto: Confeti en las Casas (sonido de celebración).",
+		"volcan_desc": "Lanza varias bolas de magma.\nEfecto: Explosiones múltiples."
+	}
+}
+
 const CARD_DETAILS = {
 	0: {
 		"title": "CARTA DE COMUNIDAD",
@@ -101,11 +149,13 @@ func _ready() -> void:
 	# Inicializar HUD
 	_setup_hud()
 	_init_bottom_card_layout()
+	_init_powerups_hud()
 
 	# Generar tablero e iniciar juego
 	_board_coords = level_config.generate_coords()
 	_center_board(_board_coords) 
 	_draw_board(_board_coords)
+	_distribute_powerups()
 	_setup_game(_board_coords)
 	camera.setup_limits(_board_coords, tile_map_layer, HEX_SIZE)
 	
@@ -285,8 +335,67 @@ func _draw_board(coords: Array[Vector2i]) -> void:
 		_empty_tile_map[coord] = empty_coord
 		tile_map_layer.set_cell(coord, SOURCE_ID, empty_coord)
 
+func _distribute_powerups() -> void:
+	_powerup_cells.clear()
+	for t in _powerup_tweens:
+		if t and t.is_running():
+			t.kill()
+	_powerup_tweens.clear()
+	for sprite in _powerup_sprites.values():
+		if is_instance_valid(sprite):
+			sprite.queue_free()
+	_powerup_sprites.clear()
+	
+	if not level_config:
+		return
+		
+	var count = level_config.powerup_count
+	if count <= 0:
+		return
+		
+	var coords_pool = _board_coords.duplicate()
+	coords_pool.shuffle()
+	
+	var actual_count = min(count, coords_pool.size())
+	var powerup_types = ["asentamiento", "restauracion", "bloqueo", "sobrepoblacion"]
+	
+	for i in actual_count:
+		var coord = coords_pool[i]
+		var type = powerup_types.pick_random()
+		_powerup_cells[coord] = type
+		
+		# Crear el Sprite2D del powerup con su icono específico del TileMap
+		var star := Sprite2D.new()
+		star.name = "Star_" + str(coord.x) + "_" + str(coord.y)
+		star.texture = _get_powerup_texture(type)
+		star.position = tile_map_layer.map_to_local(coord)
+		star.z_index = 10
+		
+		# Ajustar escala base dinámicamente según el tamaño del icono y el hexágono
+		var target_size = 48.0
+		var tex_width = 122.0
+		var base_scale = target_size / tex_width
+		star.scale = Vector2(base_scale, base_scale)
+		
+		tile_map_layer.add_child(star)
+		_powerup_sprites[coord] = star
+		
+		# Crear Tween infinito para la respiración y brillo leve de la estrella
+		var tween = create_tween().set_loops().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		tween.tween_property(star, "scale", Vector2(base_scale * 1.25, base_scale * 1.25), 0.9)
+		tween.parallel().tween_property(star, "modulate", Color(1.4, 1.4, 1.0, 1.0), 0.9)
+		
+		tween.chain().tween_property(star, "scale", Vector2(base_scale, base_scale), 0.9)
+		tween.parallel().tween_property(star, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.9)
+		
+		_powerup_tweens.append(tween)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if _roulette_active or game.game_over or get_tree().paused:
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_G:
+		print("🔥 Tecla 'G' presionada: Lanzando bola de fuego parabólica entre 2 celdas aleatorias...")
+		_launch_test_fireball()
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
@@ -295,6 +404,471 @@ func _unhandled_input(event: InputEvent) -> void:
 		var cell: Vector2i = tile_map_layer.local_to_map(local_pos)
 		game.play_at(cell)
 
+func _launch_test_fireball() -> void:
+	if _board_coords.size() < 2:
+		return
+		
+	var coords_copy = _board_coords.duplicate()
+	coords_copy.shuffle()
+	var origin_cell: Vector2i = coords_copy[0]
+	var target_cell: Vector2i = coords_copy[1]
+	
+	var start_world = tile_map_layer.map_to_local(origin_cell)
+	var target_world = tile_map_layer.map_to_local(target_cell)
+	
+	var fireball_node := Node2D.new()
+	fireball_node.position = start_world
+	tile_map_layer.add_child(fireball_node)
+	
+	# 1. Núcleo denso de partículas (sin sprites estáticos)
+	var core_particles := CPUParticles2D.new()
+	core_particles.amount = 50
+	core_particles.lifetime = 0.25
+	core_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	core_particles.emission_sphere_radius = 4.0
+	core_particles.spread = 180.0
+	core_particles.gravity = Vector2.ZERO
+	core_particles.initial_velocity_min = 10.0
+	core_particles.initial_velocity_max = 35.0
+	core_particles.scale_amount_min = 8.0
+	core_particles.scale_amount_max = 16.0
+	
+	var core_gradient := Gradient.new()
+	core_gradient.set_color(0, Color(2.5, 2.5, 2.0, 1.0))
+	core_gradient.add_point(0.5, Color(1.0, 0.7, 0.1, 0.9))
+	core_gradient.set_color(1, Color(1.0, 0.3, 0.0, 0.0))
+	core_particles.color_ramp = core_gradient
+	core_particles.z_index = 22
+	fireball_node.add_child(core_particles)
+	
+	# 2. Cola ardiente de fuego y humo
+	var trail_particles := CPUParticles2D.new()
+	trail_particles.amount = 60
+	trail_particles.lifetime = 0.5
+	trail_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	trail_particles.emission_sphere_radius = 7.0
+	trail_particles.spread = 45.0
+	trail_particles.gravity = Vector2(0, -60)
+	trail_particles.initial_velocity_min = 30.0
+	trail_particles.initial_velocity_max = 80.0
+	trail_particles.scale_amount_min = 6.0
+	trail_particles.scale_amount_max = 18.0
+	
+	var trail_gradient := Gradient.new()
+	trail_gradient.set_color(0, Color(1.0, 0.9, 0.3, 1.0))
+	trail_gradient.add_point(0.3, Color(1.0, 0.4, 0.0, 0.9))
+	trail_gradient.add_point(0.7, Color(0.7, 0.1, 0.0, 0.5))
+	trail_gradient.set_color(1, Color(0.12, 0.12, 0.12, 0.0))
+	trail_particles.color_ramp = trail_gradient
+	trail_particles.z_index = 20
+	fireball_node.add_child(trail_particles)
+	
+	# 3. Chispas voladoras al frente
+	var spark_particles := CPUParticles2D.new()
+	spark_particles.amount = 25
+	spark_particles.lifetime = 0.35
+	spark_particles.spread = 75.0
+	spark_particles.gravity = Vector2(0, 30)
+	spark_particles.initial_velocity_min = 60.0
+	spark_particles.initial_velocity_max = 140.0
+	spark_particles.scale_amount_min = 2.0
+	spark_particles.scale_amount_max = 5.0
+	
+	var spark_gradient := Gradient.new()
+	spark_gradient.set_color(0, Color(1.0, 1.0, 0.6, 1.0))
+	spark_gradient.set_color(1, Color(1.0, 0.4, 0.0, 0.0))
+	spark_particles.color_ramp = spark_gradient
+	spark_particles.z_index = 21
+	fireball_node.add_child(spark_particles)
+	
+	# Parámetros del vuelo parabólico
+	var distance = start_world.distance_to(target_world)
+	var max_arc_height = clamp(distance * 0.45, 100.0, 260.0)
+	var flight_duration = clamp(distance / 450.0, 0.6, 1.2)
+	
+	var tween = create_tween().set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_method(func(t: float):
+		if not is_instance_valid(fireball_node):
+			return
+		var current_pos = start_world.lerp(target_world, t)
+		var arc_y = 4.0 * max_arc_height * t * (1.0 - t)
+		var pos_now = Vector2(current_pos.x, current_pos.y - arc_y)
+		fireball_node.position = pos_now
+		
+		# Inclinación según tangente de la curva
+		var next_t = min(t + 0.02, 1.0)
+		var next_pos_base = start_world.lerp(target_world, next_t)
+		var next_arc_y = 4.0 * max_arc_height * next_t * (1.0 - next_t)
+		var next_pos = Vector2(next_pos_base.x, next_pos_base.y - next_arc_y)
+		if pos_now.distance_squared_to(next_pos) > 0.1:
+			fireball_node.rotation = (next_pos - pos_now).angle()
+	, 0.0, 1.0, flight_duration)
+	
+	tween.chain().tween_callback(func():
+		if is_instance_valid(fireball_node):
+			fireball_node.queue_free()
+		_spawn_fireball_explosion_particles(target_world)
+	)
+
+func _spawn_fireball_explosion_particles(world_pos: Vector2) -> void:
+	var container := Node2D.new()
+	container.position = world_pos
+	tile_map_layer.add_child(container)
+	
+	# Capa 1: Ráfaga de Onda Expansiva (Flash & Sparks)
+	var burst := CPUParticles2D.new()
+	burst.emitting = false
+	burst.one_shot = true
+	burst.amount = 80
+	burst.lifetime = 0.75
+	burst.explosiveness = 0.98
+	burst.spread = 180.0
+	burst.gravity = Vector2(0, 80)
+	burst.initial_velocity_min = 200.0
+	burst.initial_velocity_max = 420.0
+	burst.scale_amount_min = 6.0
+	burst.scale_amount_max = 18.0
+	
+	var burst_grad := Gradient.new()
+	burst_grad.set_color(0, Color(2.5, 2.5, 2.0, 1.0))
+	burst_grad.add_point(0.25, Color(1.0, 0.8, 0.2, 1.0))
+	burst_grad.add_point(0.65, Color(0.9, 0.25, 0.0, 0.8))
+	burst_grad.set_color(1, Color(0.2, 0.05, 0.0, 0.0))
+	burst.color_ramp = burst_grad
+	burst.z_index = 25
+	container.add_child(burst)
+	
+	# Capa 2: Chispas y Ascuas que vuelan hacia arriba (Embers)
+	var embers := CPUParticles2D.new()
+	embers.emitting = false
+	embers.one_shot = true
+	embers.amount = 40
+	embers.lifetime = 1.1
+	embers.explosiveness = 0.8
+	embers.spread = 110.0
+	embers.direction = Vector2(0, -1)
+	embers.gravity = Vector2(0, 160)
+	embers.initial_velocity_min = 140.0
+	embers.initial_velocity_max = 280.0
+	embers.scale_amount_min = 3.0
+	embers.scale_amount_max = 6.0
+	
+	var embers_grad := Gradient.new()
+	embers_grad.set_color(0, Color(1.0, 0.9, 0.4, 1.0))
+	embers_grad.add_point(0.5, Color(1.0, 0.4, 0.0, 0.9))
+	embers_grad.set_color(1, Color(0.6, 0.1, 0.0, 0.0))
+	embers.color_ramp = embers_grad
+	embers.z_index = 26
+	container.add_child(embers)
+	
+	# Capa 3: Penacho de Humo Oscuro (Smoke Plume)
+	var smoke := CPUParticles2D.new()
+	smoke.emitting = false
+	smoke.one_shot = true
+	smoke.amount = 30
+	smoke.lifetime = 1.3
+	smoke.explosiveness = 0.75
+	smoke.spread = 80.0
+	smoke.direction = Vector2(0, -1)
+	smoke.gravity = Vector2(0, -90)
+	smoke.initial_velocity_min = 40.0
+	smoke.initial_velocity_max = 110.0
+	smoke.scale_amount_min = 12.0
+	smoke.scale_amount_max = 24.0
+	
+	var smoke_grad := Gradient.new()
+	smoke_grad.set_color(0, Color(0.3, 0.3, 0.35, 0.7))
+	smoke_grad.add_point(0.5, Color(0.18, 0.18, 0.22, 0.5))
+	smoke_grad.set_color(1, Color(0.08, 0.08, 0.1, 0.0))
+	smoke.color_ramp = smoke_grad
+	smoke.z_index = 24
+	container.add_child(smoke)
+	
+	# Disparar emisión
+	burst.emitting = true
+	embers.emitting = true
+	smoke.emitting = true
+	
+	# Sonido de explosión comentado por el momento
+	# if get_node_or_null("/root/AudioManager"):
+	# 	get_node("/root/AudioManager").play_sfx("explosion")
+		
+	get_tree().create_timer(1.6).timeout.connect(container.queue_free)
+
+func _process(_delta: float) -> void:
+	if _roulette_active or not game or game.game_over or get_tree().paused:
+		if _hovered_board_cell != Vector2i(-999, -999):
+			_on_board_cell_exited(_hovered_board_cell)
+			_hovered_board_cell = Vector2i(-999, -999)
+		return
+		
+	var mouse_pos = get_global_mouse_position()
+	var local_pos = tile_map_layer.to_local(mouse_pos)
+	var cell = tile_map_layer.local_to_map(local_pos)
+	
+	var is_on_board = _board_coords.has(cell)
+	
+	if is_on_board:
+		if cell != _hovered_board_cell:
+			_on_board_cell_exited(_hovered_board_cell)
+			_hovered_board_cell = cell
+			_on_board_cell_entered(cell)
+	else:
+		if _hovered_board_cell != Vector2i(-999, -999):
+			_on_board_cell_exited(_hovered_board_cell)
+			_hovered_board_cell = Vector2i(-999, -999)
+
+func _on_board_cell_entered(cell: Vector2i) -> void:
+	if _powerup_cells.has(cell):
+		_show_powerup_description(cell)
+
+func _on_board_cell_exited(cell: Vector2i) -> void:
+	if _powerup_cells.has(cell):
+		_close_powerup_popup()
+
+func _get_powerup_texture(type: String) -> Texture2D:
+	if not POWERUP_ATLAS_COORDS.has(type):
+		return null
+	var coord: Vector2i = POWERUP_ATLAS_COORDS[type]
+	var atlas_tex := AtlasTexture.new()
+	atlas_tex.atlas = load("res://Sprites/Prueba/TilesMap.png")
+	atlas_tex.region = Rect2(coord.x * 122, coord.y * 142, 122, 142)
+	return atlas_tex
+
+func _spawn_powerup_pickup_particles(screen_pos: Vector2) -> void:
+	var particles := CPUParticles2D.new()
+	particles.global_position = screen_pos
+	particles.emitting = false
+	particles.one_shot = true
+	particles.amount = 45
+	particles.lifetime = 0.85
+	particles.explosiveness = 0.95
+	particles.spread = 180.0
+	particles.gravity = Vector2(0, 140)
+	particles.initial_velocity_min = 140.0
+	particles.initial_velocity_max = 260.0
+	particles.scale_amount_min = 5.0
+	particles.scale_amount_max = 10.0
+	
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(1.0, 0.9, 0.3, 1.0))
+	gradient.add_point(0.5, Color(1.0, 0.5, 0.1, 1.0))
+	gradient.set_color(1, Color(0.9, 0.2, 0.0, 0.0))
+	particles.color_ramp = gradient
+	
+	particles.z_index = 25
+	hud.add_child(particles)
+	particles.emitting = true
+	
+	get_tree().create_timer(1.2).timeout.connect(particles.queue_free)
+
+func _init_powerups_hud() -> void:
+	var slots_hbox = hud.get_node_or_null("BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox")
+	if not slots_hbox:
+		return
+	for child in slots_hbox.get_children():
+		for subchild in child.get_children():
+			subchild.queue_free()
+	_update_powerups_hud()
+
+func _update_powerups_hud() -> void:
+	var slots_hbox = hud.get_node_or_null("BottomCategoryBar/Margin/CategoriesHBox/PowerupsSection/Margin/VBox/SlotsHBox")
+	if not slots_hbox:
+		return
+		
+	var current_slots = slots_hbox.get_children()
+	while current_slots.size() < _player_powerups.size():
+		var new_slot := Panel.new()
+		new_slot.custom_minimum_size = Vector2(50, 48)
+		var slot_style := StyleBoxFlat.new()
+		slot_style.bg_color = Color(0.1, 0.12, 0.18, 0.8)
+		slot_style.border_width_left = 1
+		slot_style.border_width_top = 1
+		slot_style.border_width_right = 1
+		slot_style.border_width_bottom = 1
+		slot_style.border_color = Color(0.96, 0.75, 0.28, 0.6)
+		slot_style.corner_radius_top_left = 6
+		slot_style.corner_radius_top_right = 6
+		slot_style.corner_radius_bottom_right = 6
+		slot_style.corner_radius_bottom_left = 6
+		new_slot.add_theme_stylebox_override("panel", slot_style)
+		slots_hbox.add_child(new_slot)
+		current_slots.append(new_slot)
+		
+	for i in current_slots.size():
+		var slot_node: Panel = current_slots[i]
+		for c in slot_node.get_children():
+			c.queue_free()
+			
+		if i < _player_powerups.size():
+			var powerup_type = _player_powerups[i]
+			
+			var tex_rect := TextureRect.new()
+			tex_rect.name = "PowerupIcon"
+			tex_rect.texture = _get_powerup_texture(powerup_type)
+			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+			tex_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+			
+			tex_rect.mouse_entered.connect(func():
+				_show_powerup_tooltip_at_pos(powerup_type, slot_node.get_global_transform_with_canvas().origin)
+			)
+			tex_rect.mouse_exited.connect(_close_powerup_popup)
+			
+			tex_rect.gui_input.connect(func(event: InputEvent):
+				if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+					print("⚡ Powerup cliqueado en barra HUD (Jugador): ", powerup_type)
+			)
+			
+			slot_node.add_child(tex_rect)
+
+func _collect_player_powerup(type: String) -> void:
+	_player_powerups.append(type)
+	print("🟢 Jugador recogió el powerup: '", type, "'. Total en inventario: ", _player_powerups.size())
+	_update_powerups_hud()
+
+func _collect_ai_powerup(type: String) -> void:
+	_ai_powerups.append(type)
+	_ai_powerup_counts[type] = _ai_powerup_counts.get(type, 0) + 1
+	print("🤖 IA recogió el powerup: '", type, "'. Inventario actual IA: ", _ai_powerup_counts)
+
+func _show_powerup_description(cell: Vector2i) -> void:
+	if not _powerup_cells.has(cell):
+		return
+	var type = _powerup_cells[cell]
+	var star_sprite = _powerup_sprites.get(cell, null)
+	var star_screen_pos := Vector2(640, 360)
+	if is_instance_valid(star_sprite):
+		star_screen_pos = star_sprite.get_global_transform_with_canvas().origin
+	_show_powerup_tooltip_at_pos(type, star_screen_pos)
+
+func _show_powerup_tooltip_at_pos(type: String, screen_pos: Vector2) -> void:
+	if not POWERUP_DETAILS.has(type):
+		return
+		
+	if _powerup_popup_tween and _powerup_popup_tween.is_running():
+		_powerup_popup_tween.kill()
+		_powerup_popup_tween = null
+		
+	if is_instance_valid(_powerup_popup):
+		_powerup_popup.queue_free()
+		
+	var details = POWERUP_DETAILS[type]
+	
+	_powerup_popup = PanelContainer.new()
+	_powerup_popup.name = "PowerupPopup"
+	_powerup_popup.custom_minimum_size = Vector2(0, 0)
+	_powerup_popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.08, 0.12, 0.85)
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.96, 0.75, 0.28, 0.9)
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	style.corner_radius_bottom_right = 10
+	style.corner_radius_bottom_left = 10
+	style.shadow_color = Color(0, 0, 0, 0.4)
+	style.shadow_size = 8
+	_powerup_popup.add_theme_stylebox_override("panel", style)
+	
+	var margin := MarginContainer.new()
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	_powerup_popup.add_child(margin)
+	
+	var vbox := VBoxContainer.new()
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_theme_constant_override("separation", 6)
+	margin.add_child(vbox)
+	
+	var title_lbl := Label.new()
+	title_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	title_lbl.text = "⚡ PODER: " + details["title"] + " ⚡"
+	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_lbl.add_theme_font_size_override("font_size", 10)
+	title_lbl.add_theme_color_override("font_color", Color(0.96, 0.75, 0.28))
+	vbox.add_child(title_lbl)
+	
+	var content_vbox := VBoxContainer.new()
+	content_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	content_vbox.add_theme_constant_override("separation", 5)
+	vbox.add_child(content_vbox)
+	
+	var p_section := VBoxContainer.new()
+	p_section.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var p_header := Label.new()
+	p_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	p_header.text = "🟢 JUGADOR (TÚ):"
+	p_header.add_theme_color_override("font_color", Color(0.3, 0.85, 0.45))
+	p_header.add_theme_font_size_override("font_size", 9)
+	p_section.add_child(p_header)
+	
+	var p_desc := Label.new()
+	p_desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	p_desc.text = details["player_desc"]
+	p_desc.autowrap_mode = TextServer.AUTOWRAP_OFF
+	p_desc.add_theme_font_size_override("font_size", 8)
+	p_desc.add_theme_color_override("font_color", Color(0.85, 0.88, 0.95))
+	p_section.add_child(p_desc)
+	content_vbox.add_child(p_section)
+	
+	var v_section := VBoxContainer.new()
+	v_section.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var v_header := Label.new()
+	v_header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v_header.text = "🔴 VOLCÁN (LAVA):"
+	v_header.add_theme_color_override("font_color", Color(0.95, 0.35, 0.35))
+	v_header.add_theme_font_size_override("font_size", 9)
+	v_section.add_child(v_header)
+	
+	var v_desc := Label.new()
+	v_desc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v_desc.text = details["volcan_desc"]
+	v_desc.autowrap_mode = TextServer.AUTOWRAP_OFF
+	v_desc.add_theme_font_size_override("font_size", 8)
+	v_desc.add_theme_color_override("font_color", Color(0.85, 0.88, 0.95))
+	v_section.add_child(v_desc)
+	content_vbox.add_child(v_section)
+	
+	hud.add_child(_powerup_popup)
+	
+	var popup_size = _powerup_popup.get_combined_minimum_size()
+	
+	_powerup_popup.pivot_offset = popup_size / 2.0
+	_powerup_popup.global_position = screen_pos - (popup_size / 2.0)
+	_powerup_popup.scale = Vector2(0.1, 0.1)
+	_powerup_popup.modulate.a = 0.0
+	
+	_powerup_popup_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_powerup_popup_tween.tween_property(_powerup_popup, "scale", Vector2(1.0, 1.0), 0.22)
+	_powerup_popup_tween.tween_property(_powerup_popup, "modulate:a", 0.85, 0.22)
+	
+	var target_x = clamp(screen_pos.x - popup_size.x / 2.0, 30.0, 1280.0 - popup_size.x - 30.0)
+	var target_y = clamp(screen_pos.y - popup_size.y - 15.0, 30.0, 720.0 - popup_size.y - 30.0)
+	_powerup_popup_tween.tween_property(_powerup_popup, "global_position", Vector2(target_x, target_y), 0.22)
+
+func _close_powerup_popup() -> void:
+	if _powerup_popup_tween and _powerup_popup_tween.is_running():
+		_powerup_popup_tween.kill()
+		_powerup_popup_tween = null
+		
+	if is_instance_valid(_powerup_popup):
+		var panel = _powerup_popup
+		_powerup_popup = null
+		
+		var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tween.tween_property(panel, "scale", Vector2(0.1, 0.1), 0.25)
+		tween.tween_property(panel, "modulate:a", 0.0, 0.25)
+		tween.chain().tween_callback(panel.queue_free)
+
 func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 	if _highlight_sprites.has(coord):
 		var sprite = _highlight_sprites[coord]
@@ -302,6 +876,34 @@ func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 			sprite.queue_free()
 		_highlight_sprites.erase(coord)
 		
+	# Si la celda contiene un powerup, procesar recolección
+	if _powerup_cells.has(coord):
+		var powerup_type: String = _powerup_cells[coord]
+		_powerup_cells.erase(coord)
+		
+		var star_sprite = _powerup_sprites.get(coord, null)
+		var star_screen_pos := Vector2(640, 360)
+		if is_instance_valid(star_sprite):
+			star_screen_pos = star_sprite.get_global_transform_with_canvas().origin
+			star_sprite.queue_free()
+			_powerup_sprites.erase(coord)
+		else:
+			star_screen_pos = tile_map_layer.map_to_local(coord)
+			
+		# Crear efecto de partículas muy notorio en la posición
+		_spawn_powerup_pickup_particles(star_screen_pos)
+		
+		# Si la ventana emergente estaba abierta sobre esta celda, cerrarla
+		if _hovered_board_cell == coord:
+			_close_powerup_popup()
+			_hovered_board_cell = Vector2i(-999, -999)
+			
+		# Añadir al inventario correspondiente
+		if player_id == HUMAN_PLAYER_ID:
+			_collect_player_powerup(powerup_type)
+		else:
+			_collect_ai_powerup(powerup_type)
+			
 	var atlas_coord: Vector2i = _get_random_player1_coord() if player_id == AI_PLAYER_ID else _get_random_player2_coord()
 	tile_map_layer.set_cell(coord, SOURCE_ID, atlas_coord)
 
@@ -837,5 +1439,3 @@ func _on_card_mouse_exited() -> void:
 		hover_tween.tween_property(panel, "global_position:y", panel.global_position.y + 10.0, 0.2)
 		hover_tween.tween_property(panel, "modulate:a", 0.0, 0.2)
 		hover_tween.chain().tween_callback(panel.queue_free)
-
-	_highlight_sprites.clear()

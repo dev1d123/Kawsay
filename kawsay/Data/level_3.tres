@@ -10,4 +10,5 @@ ai_difficulty = 2
 width = 10
 height = 11
 radius = 5
+powerup_count = 4
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"

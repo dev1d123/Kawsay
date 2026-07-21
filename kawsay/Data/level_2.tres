@@ -9,4 +9,5 @@ generation_mode = 1
 ai_difficulty = 1
 width = 10
 height = 7
+powerup_count = 3
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"
