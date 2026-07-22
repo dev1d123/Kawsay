@@ -25,6 +25,7 @@ level_name = "Nido de Águilas – Base de Altura"
 generation_mode = 1
 win_conditions = Array[ExtResource("2_lsqfx")]([SubResource("Resource_2tagp"), SubResource("Resource_dk7yj"), SubResource("Resource_kn2pv")])
 ai_difficulty = 4
+powerup_count = 8
 width = 29
 height = 28
 radius = 20

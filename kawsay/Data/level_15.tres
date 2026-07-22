@@ -25,6 +25,7 @@ level_name = "Cráter del Misti – Boca Erupción"
 generation_mode = 2
 win_conditions = Array[ExtResource("2_6cyam")]([SubResource("Resource_0p3qc"), SubResource("Resource_7wyw0"), SubResource("Resource_8w7sf")])
 ai_difficulty = 6
+powerup_count = 10
 width = 35
 height = 35
 radius = 20

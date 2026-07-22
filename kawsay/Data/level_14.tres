@@ -26,6 +26,7 @@ level_name = "Faldas del Misti – Anillo de Fuego"
 generation_mode = 2
 win_conditions = Array[ExtResource("2_wea62")]([SubResource("Resource_14gd4"), SubResource("Resource_sfp33"), SubResource("Resource_h7xgk")])
 ai_difficulty = 5
+powerup_count = 10
 width = 35
 height = 20
 radius = 20

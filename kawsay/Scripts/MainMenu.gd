@@ -21,7 +21,7 @@ const LEVEL_CARD_PREFAB = preload("res://Scene/MenuPrincipal/level_card_item.tsc
 
 @onready var log_banner: PanelContainer = $LogBanner
 @onready var log_label: Label = $LogBanner/MarginContainer/LogLabel
-
+#@onready var auto_game: Node = $AutoGameDemo
 # Elementos del Selector de Niveles
 @onready var level_select_overlay: Control = $LevelSelectOverlay
 @onready var level_select_back_button: Button = $LevelSelectOverlay/MarginContainer/VBoxContainer/Footer/BackButton
@@ -36,7 +36,6 @@ var max_unlocked_level: int = 1
 var _card_items: Dictionary = {} # level_num -> LevelCardItem
 
 func _ready() -> void:
-	# Iniciar música de menú
 	if get_node_or_null("/root/AudioManager"):
 		get_node("/root/AudioManager").play_music("menu")
 

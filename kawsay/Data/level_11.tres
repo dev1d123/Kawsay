@@ -19,6 +19,7 @@ script = ExtResource("1_eb8a2")
 level_name = "Los Pastores – Refugio de Ceniza"
 win_conditions = Array[ExtResource("2_0rc3a")]([SubResource("Resource_yyfd5"), SubResource("Resource_citc3")])
 ai_difficulty = 4
+powerup_count = 7
 width = 25
 height = 20
 radius = 18

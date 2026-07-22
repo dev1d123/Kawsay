@@ -62,5 +62,5 @@ func _spawn_marker(level_num: int, max_unlocked: int) -> void:
 
 func _on_level_selected(level_num: int) -> void:
 	level_chosen.emit(level_num)
-	if get_node_or_null("/root/GameGlobals"):
-		get_node("/root/GameGlobals").select_and_start_level(level_num)
+	if GameGlobals:   # si es autoload
+		GameGlobals.select_and_start_level(level_num)

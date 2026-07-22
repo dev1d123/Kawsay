@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://kegwn3la53c"]
+
+[ext_resource type="Script" uid="uid://8fwpnugegffk" path="res://Scripts/AI/AutoGameDemo.gd" id="1_o13wh"]
+
+[node name="AutoGameDemo" type="Node2D" unique_id=2146444027]
+script = ExtResource("1_o13wh")

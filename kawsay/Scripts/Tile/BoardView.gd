@@ -1,6 +1,7 @@
 # board_view.gd
+class_name BoardView
 extends Node2D
-
+@export var is_demo: bool = false
 @export var tile_map_layer: TileMapLayer
 @export var level_config: LevelConfig
 @export var camera: Camera2D  
@@ -121,9 +122,7 @@ const INVALID_NEIGHBOR := Vector2i(-99999, -99999)
 @onready var selector_button: Button = $HUD/TopRightButtons/SelectorButton
 @onready var restart_button: Button = $HUD/TopRightButtons/RestartButton
 @onready var settings_button: Button = $HUD/TopRightButtons/SettingsButton
-@onready var pause_button: Button = $HUD/TopRightButtons/PauseButton
 
-@onready var pause_overlay: Control = $HUD/PauseOverlay
 @onready var settings_overlay: PanelContainer = $HUD/SettingsOverlay
 @onready var music_slider: HSlider = $HUD/SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/MusicSlider
 @onready var sfx_slider: HSlider = $HUD/SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/SfxSlider
@@ -141,61 +140,63 @@ const INVALID_NEIGHBOR := Vector2i(-99999, -99999)
 func _ready() -> void:
 	print("[LOG BoardView] _ready() INICIADO en escena dani.tscn")
 
-	# Activar flag de ruleta al iniciar
-	_roulette_active = true
+		# === 1. CARGA DE CONFIGURACIÓN (solo en modo normal) ===
+	if not is_demo and GameGlobals:
+		if GameGlobals.selected_level_config:
+			level_config = GameGlobals.selected_level_config
 
-	# Iniciar música de nivel
-	if get_node_or_null("/root/AudioManager"):
-		get_node("/root/AudioManager").play_music("level")
+		# === 2. CONFIGURACIÓN DEL TABLERO (común a demo y normal) ===
+	_board_coords = level_config.generate_coords()
+	_center_board(_board_coords)
+	_draw_board(_board_coords)
+	_distribute_powerups()
+	_setup_game(_board_coords)   # Este método debe adaptarse (ver más abajo)
 
-	# Cargar nivel desde el Singleton global si está disponible
-	if get_node_or_null("/root/GameGlobals") and get_node("/root/GameGlobals").selected_level_config:
-		level_config = get_node("/root/GameGlobals").selected_level_config
-		print("[LOG BoardView] Nivel cargado desde GameGlobals: %s (%s)" % [level_config.resource_path, level_config.level_name])
-	else:
-		print("[LOG BoardView] Usando level_config predeterminado: %s" % level_config.level_name)
+		# === 3. CONFIGURACIÓN DE CÁMARA (común) ===
+	if camera:
+		camera.setup_limits(_board_coords, tile_map_layer, HEX_SIZE)
+			# En demo, ajustar zoom y posición (se puede sobrescribir desde AutoGameDemo)
+		if is_demo:
+			camera.zoom = Vector2(0.4, 0.4)
+			camera.position = Vector2.ZERO
+			camera.limit_left = -10000
+			camera.limit_right = 10000
+			camera.limit_top = -10000
+			camera.limit_bottom = 10000
 
-	# Asegurar que el árbol no esté pausado
+		# === 4. SI ES DEMO, TERMINAMOS AQUÍ (no UI, ni música, ni ruleta) ===
+	if is_demo:
+		print("[LOG BoardView] Modo DEMO activo. No se inicializa UI.")
+		return
+
+		# === 5. MODO NORMAL: PAUSA, MÚSICA, HUD, RULETA, ETC. ===
 	get_tree().paused = false
 
-	# Precargar inventario del jugador con los 4 tipos de powerups para testeo completo de las nuevas mecánicas
-	_player_powerups.append("asentamiento")
-	_player_powerups.append("restauracion")
-	_player_powerups.append("bloqueo")
-	_player_powerups.append("sobrepoblacion")
+		# Música
+	if AudioManager:
+		AudioManager.play_music("level")
 
-	# Inicializar HUD
+		# HUD y UI
 	_setup_hud()
 	_init_bottom_card_layout()
 	_init_powerups_hud()
-
-	# Generar tablero e iniciar juego
-	_board_coords = level_config.generate_coords()
-	_center_board(_board_coords) 
-	_draw_board(_board_coords)
-	_distribute_powerups()
-	_setup_game(_board_coords)
-	if camera:
-		camera.setup_limits(_board_coords, tile_map_layer, HEX_SIZE)
-
-	# Aplicar las 2 fuentes globales (MoonlitFlow-Regular y MoonlitFlow-Italic) a todo el HUD
 	_apply_custom_fonts(self)
-
-	# Ejecutar ruleta de cartas
 	_run_card_roulette()
-	
-	# Conectar sonidos de botones
 	_connect_click_sfx(self)
+
+		# Conexión de señales de árbol (solo necesario una vez)
 	var tree := get_tree()
+	if not tree.node_added.is_connected(_on_node_added):
+		tree.node_added.connect(_on_node_added)
+	if not tree_exited.is_connected(_on_tree_exited):
+		tree_exited.connect(_on_tree_exited)
 
-	tree.node_added.connect(_on_node_added)
-
-	tree_exited.connect(func():
-		if tree.node_added.is_connected(_on_node_added):
-			tree.node_added.disconnect(_on_node_added)
-	)
 	print("[LOG BoardView] _ready() FINALIZADO EXITOSAMENTE. Nivel listo para jugar!")
-
+	
+func _on_tree_exited() -> void:
+	var tree := get_tree()
+	if tree and tree.node_added.is_connected(_on_node_added):
+		tree.node_added.disconnect(_on_node_added)
 func _apply_custom_fonts(node: Node) -> void:
 	var font_reg = load("res://Font/MoonlitFlow-Regular.ttf")
 	var font_ita = load("res://Font/MoonlitFlow-Italic.ttf")
@@ -225,16 +226,13 @@ func _setup_hud() -> void:
 	selector_button.pressed.connect(_on_selector_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
-	pause_button.pressed.connect(_on_pause_pressed)
 
 	# Hover animado en botones HUD
 	_setup_hud_button_hover(selector_button)
 	_setup_hud_button_hover(restart_button)
 	_setup_hud_button_hover(settings_button)
-	_setup_hud_button_hover(pause_button)
 
 	# 3. Configuración de Modales (Pause, Settings y ResultDialog)
-	pause_overlay.visible = false
 	settings_overlay.visible = false
 	result_dialog.visible = false
 
@@ -291,13 +289,6 @@ func _on_restart_pressed() -> void:
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
-func _on_pause_pressed() -> void:
-	get_tree().paused = true
-	pause_overlay.visible = true
-	pause_overlay.modulate.a = 0.0
-	var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(pause_overlay, "modulate:a", 1.0, 0.25)
-
 func _on_settings_pressed() -> void:
 	settings_overlay.visible = true
 	settings_overlay.modulate.a = 0.0
@@ -327,7 +318,11 @@ func _on_sfx_slider_changed(val: float) -> void:
 func _update_volume_labels() -> void:
 	music_val_label.text = "%d%%" % int(round(music_slider.value * 100))
 	sfx_val_label.text = "%d%%" % int(round(sfx_slider.value * 100))
-
+	
+func _exit_tree() -> void:
+	_kill_all_tweens()
+	_clear_highlights()
+	
 # --- CONTROL DE ENTRADA Y DESPAUSADO POR CLICK ---
 func _input(event: InputEvent) -> void:
 	if _animation_playing:
@@ -343,11 +338,6 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	if get_tree().paused and pause_overlay.visible:
-		if event is InputEventMouseButton and event.pressed:
-			get_tree().paused = false
-			pause_overlay.visible = false
-			get_viewport().set_input_as_handled()
 
 func _build_neighbor_map(coords: Array[Vector2i]) -> Dictionary:
 	var valid_set: Dictionary = {}
@@ -364,23 +354,26 @@ func _build_neighbor_map(coords: Array[Vector2i]) -> Dictionary:
 	return map
 
 func _setup_game(coords: Array[Vector2i]) -> void:
-	var neighbor_map: Dictionary = _build_neighbor_map(coords)
-	var hex_board := HexBoard.new(coords, neighbor_map)  # ya no recibe win_length aquí
+	var neighbor_map = _build_neighbor_map(coords)
+	var hex_board = HexBoard.new(coords, neighbor_map)
 	hex_board.win_length = level_config.get_max_required_length()
 	game = GameManager.new(hex_board, level_config.win_conditions)
 	ai = AIFactory.create(level_config.ai_difficulty, hex_board, AI_PLAYER_ID, HUMAN_PLAYER_ID, level_config.get_max_required_length())
-	
+
 	game.piece_placed.connect(_on_piece_placed)
 	game.turn_changed.connect(_on_turn_changed)
 	game.game_won.connect(_on_game_won)
 	game.invalid_move.connect(_on_invalid_move)
-	
-	if game.current_player == HUMAN_PLAYER_ID:
+
+	# Solo mostrar highlights si NO es demo y es turno humano
+	if not is_demo and game.current_player == HUMAN_PLAYER_ID:
 		_highlight_available_cells()
 	else:
 		_clear_highlights()
-		
-	_maybe_trigger_ai_turn()
+
+	# No lanzar IA automáticamente en demo (lo maneja AutoGameDemo)
+	if not is_demo:
+		_maybe_trigger_ai_turn()
 
 func _get_random_empty_coord() -> Vector2i:
 	if not empty_atlas_coords.is_empty():
@@ -1248,11 +1241,13 @@ func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 
 func _on_turn_changed(player_id: int) -> void:
 	print("Turno de jugador ", player_id)
-	if player_id == HUMAN_PLAYER_ID:
-		_highlight_available_cells()
-	else:
-		_clear_highlights()
-	_maybe_trigger_ai_turn()
+	if not is_demo:
+		if player_id == HUMAN_PLAYER_ID:
+			_highlight_available_cells()
+		else:
+			_clear_highlights()
+		_maybe_trigger_ai_turn()
+	# En modo demo no hacemos nada de UI
 
 func _maybe_trigger_ai_turn() -> void:
 	if _roulette_active or game.game_over or get_tree().paused:
@@ -1797,8 +1792,8 @@ func _connect_button(btn: Button) -> void:
 		btn.pressed.connect(_play_button_click)
 
 func _play_button_click() -> void:
-	if get_node_or_null("/root/AudioManager"):
-		get_node("/root/AudioManager").play_sfx("button_click")
+	if AudioManager:
+		AudioManager.play_sfx("button_click")
 		
 func _kill_all_tweens() -> void:
 	for tween in _highlight_tweens:

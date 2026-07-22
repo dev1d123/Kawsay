@@ -23,6 +23,7 @@ script = ExtResource("1_eb8a2")
 level_name = "Cayma – Puerta a la Montaña"
 win_conditions = Array[ExtResource("2_ws6rh")]([SubResource("Resource_qdkeg"), SubResource("Resource_eg7ra"), SubResource("Resource_3sxjq")])
 ai_difficulty = 3
+powerup_count = 5
 width = 15
 height = 15
 radius = 15

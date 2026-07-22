@@ -25,6 +25,7 @@ level_name = "Yanahuara – Mirador de la Ciudad"
 generation_mode = 2
 win_conditions = Array[ExtResource("2_073o4")]([SubResource("Resource_e2s5g"), SubResource("Resource_7px1d"), SubResource("Resource_ic7uj")])
 ai_difficulty = 2
+powerup_count = 4
 width = 15
 height = 15
 radius = 10
