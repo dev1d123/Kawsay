@@ -22,8 +22,17 @@ func _load_config_for_level(level_num: int) -> void:
 		push_error("No se pudo cargar: " + path)
 
 func select_and_start_level(level_num: int) -> void:
+	print("[LOG GameGlobals] === INICIANDO NIVELES ===")
+	print("[LOG GameGlobals] Nivel solicitado: %d" % level_num)
 	_load_config_for_level(level_num)
-	get_tree().change_scene_to_file(GAME_SCENE_PATH)
+	if selected_level_config:
+		print("[LOG GameGlobals] Config cargada con éxito: %s (Nombre: %s)" % [selected_level_config.resource_path, selected_level_config.level_name])
+	else:
+		print("[LOG GameGlobals] ALERTA: No se pudo cargar config para nivel %d" % level_num)
+	
+	print("[LOG GameGlobals] Cambiando escena a: %s" % GAME_SCENE_PATH)
+	var err = get_tree().change_scene_to_file(GAME_SCENE_PATH)
+	print("[LOG GameGlobals] Resultado de change_scene_to_file: %d (0 = OK)" % err)
 
 func complete_level(level_num: int) -> bool:
 	var newly_unlocked: bool = false

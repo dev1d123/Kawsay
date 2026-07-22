@@ -389,3 +389,175 @@ static func play_rain_effect(parent: Node, cell_local_pos: Vector2) -> void:
 		if is_instance_valid(container):
 			container.queue_free()
 	)
+
+## Animación de columna de fuego y brasas en una celda (tecla X)
+static func play_fire_effect(parent: Node, cell_local_pos: Vector2) -> void:
+	var container := Node2D.new()
+	container.position = cell_local_pos
+	container.z_index = 28
+	parent.add_child(container)
+
+	# 1. Llamas de fuego ascendentes
+	var flames := CPUParticles2D.new()
+	flames.position = Vector2(0, 10)
+	flames.amount = 50
+	flames.lifetime = 0.75
+	flames.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	flames.emission_rect_extents = Vector2(25, 4)
+	flames.direction = Vector2(0, -1)
+	flames.spread = 12.0
+	flames.gravity = Vector2(0, -220)
+	flames.initial_velocity_min = 60.0
+	flames.initial_velocity_max = 140.0
+	flames.scale_amount_min = 6.0
+	flames.scale_amount_max = 14.0
+
+	var flame_grad := Gradient.new()
+	flame_grad.set_color(0, Color(2.0, 2.0, 1.5)) # Núcleo blanco brillante
+	flame_grad.add_point(0.2, Color(1.0, 0.8, 0.1)) # Amarillo
+	flame_grad.add_point(0.5, Color(1.0, 0.4, 0.0)) # Naranja
+	flame_grad.add_point(0.8, Color(0.9, 0.15, 0.0)) # Rojo ardiente
+	flame_grad.set_color(1, Color(0.2, 0.2, 0.2, 0.0)) # Humo disipándose
+	flames.color_ramp = flame_grad
+	container.add_child(flames)
+
+	# 2. Humo oscuro denso
+	var smoke := CPUParticles2D.new()
+	smoke.position = Vector2(0, -20)
+	smoke.amount = 30
+	smoke.lifetime = 1.0
+	smoke.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	smoke.emission_rect_extents = Vector2(20, 6)
+	smoke.direction = Vector2(0, -1)
+	smoke.spread = 20.0
+	smoke.gravity = Vector2(0, -120)
+	smoke.initial_velocity_min = 30.0
+	smoke.initial_velocity_max = 70.0
+	smoke.scale_amount_min = 10.0
+	smoke.scale_amount_max = 24.0
+
+	var smoke_grad := Gradient.new()
+	smoke_grad.set_color(0, Color(0.25, 0.25, 0.25, 0.7))
+	smoke_grad.set_color(1, Color(0.1, 0.1, 0.1, 0.0))
+	smoke.color_ramp = smoke_grad
+	container.add_child(smoke)
+
+	flames.emitting = true
+	smoke.emitting = true
+
+	parent.get_tree().create_timer(2.0).timeout.connect(func():
+		if is_instance_valid(flames): flames.emitting = false
+		if is_instance_valid(smoke): smoke.emitting = false
+	)
+	parent.get_tree().create_timer(2.8).timeout.connect(func():
+		if is_instance_valid(container):
+			container.queue_free()
+	)
+
+## Animación de expansión radial de magma fundido (tecla C)
+static func play_magma_expansion_effect(parent: Node, cell_local_pos: Vector2) -> void:
+	var container := Node2D.new()
+	container.position = cell_local_pos
+	container.z_index = 27
+	parent.add_child(container)
+
+	# 1. Ola radial expansiva de lava fundida
+	var magma_wave := CPUParticles2D.new()
+	magma_wave.amount = 80
+	magma_wave.lifetime = 0.95
+	magma_wave.explosiveness = 0.8
+	magma_wave.spread = 180.0
+	magma_wave.gravity = Vector2.ZERO
+	magma_wave.initial_velocity_min = 120.0
+	magma_wave.initial_velocity_max = 220.0
+	magma_wave.scale_amount_min = 5.0
+	magma_wave.scale_amount_max = 11.0
+
+	var magma_grad := Gradient.new()
+	magma_grad.set_color(0, Color(2.5, 0.6, 0.1)) # Magma incandescente
+	magma_grad.add_point(0.4, Color(1.0, 0.35, 0.0))
+	magma_grad.add_point(0.75, Color(0.5, 0.1, 0.0)) # Lava enfriándose
+	magma_grad.set_color(1, Color(0.08, 0.08, 0.08, 0.0)) # Ceniza disipada
+	magma_wave.color_ramp = magma_grad
+	container.add_child(magma_wave)
+
+	# 2. Chispas y brasas que saltan de la expansión
+	var embers := CPUParticles2D.new()
+	embers.amount = 35
+	embers.lifetime = 0.65
+	embers.spread = 180.0
+	embers.gravity = Vector2(0, -90)
+	embers.initial_velocity_min = 80.0
+	embers.initial_velocity_max = 160.0
+	embers.scale_amount_min = 2.0
+	embers.scale_amount_max = 5.0
+
+	var ember_grad := Gradient.new()
+	ember_grad.set_color(0, Color(2.0, 0.9, 0.2))
+	ember_grad.set_color(1, Color(0.8, 0.2, 0.0, 0.0))
+	embers.color_ramp = ember_grad
+	container.add_child(embers)
+
+	magma_wave.emitting = true
+	embers.emitting = true
+
+	parent.get_tree().create_timer(2.0).timeout.connect(func():
+		if is_instance_valid(magma_wave): magma_wave.emitting = false
+		if is_instance_valid(embers): embers.emitting = false
+	)
+	parent.get_tree().create_timer(2.8).timeout.connect(func():
+		if is_instance_valid(container):
+			container.queue_free()
+	)
+
+## Animación festiva de explosión de confeti multicolor (tecla V)
+static func play_confetti_effect(parent: Node, cell_local_pos: Vector2) -> void:
+	var container := Node2D.new()
+	container.position = cell_local_pos + Vector2(0, -40) # Lanzado desde el centro de la celda
+	container.z_index = 30
+	parent.add_child(container)
+
+	# Colores festivos de confeti
+	var colors := [
+		Color(0.2, 0.7, 1.0), # Celeste
+		Color(1.0, 0.85, 0.1), # Amarillo radiante
+		Color(1.0, 0.2, 0.55), # Fucsia/Rosa
+		Color(0.3, 0.85, 0.2) # Verde lima
+	]
+
+	var emitters: Array[CPUParticles2D] = []
+
+	for c in colors:
+		var confetti := CPUParticles2D.new()
+		confetti.amount = 22
+		confetti.lifetime = 1.6
+		confetti.one_shot = true
+		confetti.explosiveness = 0.88
+		confetti.direction = Vector2(0, -1)
+		confetti.spread = 70.0
+		confetti.gravity = Vector2(0, 190) # Caída suave
+		confetti.initial_velocity_min = 180.0
+		confetti.initial_velocity_max = 320.0
+		confetti.scale_amount_min = 5.0
+		confetti.scale_amount_max = 9.0
+		
+		# Habilitar giros y rotación tridimensional en el aire para el confeti
+		confetti.angle_min = -180.0
+		confetti.angle_max = 180.0
+		confetti.angular_velocity_min = -360.0
+		confetti.angular_velocity_max = 360.0
+
+		var grad := Gradient.new()
+		grad.set_color(0, c)
+		grad.add_point(0.7, c)
+		grad.set_color(1, Color(c.r, c.g, c.b, 0.0)) # Finde out suave
+		confetti.color_ramp = grad
+		
+		container.add_child(confetti)
+		emitters.append(confetti)
+		confetti.emitting = true
+
+	parent.get_tree().create_timer(2.5).timeout.connect(func():
+		if is_instance_valid(container):
+			container.queue_free()
+	)

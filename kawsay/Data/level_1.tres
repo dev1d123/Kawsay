@@ -6,7 +6,7 @@
 script = ExtResource("1_eb8a2")
 level_name = "Sabandía – Molino en el Valle"
 generation_mode = 1
-powerup_count = 2
+powerup_count = 10
 width = 5
 height = 5
 radius = 3

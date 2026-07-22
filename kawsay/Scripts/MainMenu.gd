@@ -96,6 +96,9 @@ func _ready() -> void:
 	_setup_button_hover_effects(settings_back_button)
 	_setup_button_hover_effects(level_select_back_button)
 
+	# Aplicar las 2 fuentes globales (MoonlitFlow-Regular y MoonlitFlow-Italic) a todo el texto del menú
+	_apply_custom_fonts(self)
+
 	# Aplicar texturas con tiling de sillar.png a las opciones del menú
 	_apply_sillar_tiling_styles()
 
@@ -109,10 +112,49 @@ func _ready() -> void:
 	tween.tween_property(main_menu_container, "modulate:a", 1.0, 0.6)
 	tween.tween_property(main_menu_container, "position:y", main_menu_container.position.y - 20, 0.6)
 
+func _apply_custom_fonts(node: Node) -> void:
+	var font_reg = load("res://Font/MoonlitFlow-Regular.ttf")
+	var font_ita = load("res://Font/MoonlitFlow-Italic.ttf")
+	
+	if node is Label or node is Button or node is LineEdit or node is RichTextLabel:
+		var node_name = node.name.to_lower()
+		if "sub" in node_name or "desc" in node_name or "badge" in node_name or "info" in node_name:
+			node.add_theme_font_override("font", font_ita)
+		else:
+			node.add_theme_font_override("font", font_reg)
+			
+	for child in node.get_children():
+		_apply_custom_fonts(child)
+
 func _apply_sillar_tiling_to_button(btn: Button, tint_normal: Color, tint_hover: Color, text_color: Color = Color(0.12, 0.14, 0.20)) -> void:
 	if not btn:
 		return
 		
+	# Hacer el fondo del botón vacío para evitar que opaque los fondos
+	var empty_style = StyleBoxEmpty.new()
+	btn.add_theme_stylebox_override("normal", empty_style)
+	btn.add_theme_stylebox_override("hover", empty_style)
+	btn.add_theme_stylebox_override("pressed", empty_style)
+	btn.add_theme_stylebox_override("focus", empty_style)
+		
+	# Agregar ColorRect sólido detrás de todo
+	var solid_bg = btn.get_node_or_null("SolidBG")
+	if not solid_bg:
+		solid_bg = ColorRect.new()
+		solid_bg.name = "SolidBG"
+		solid_bg.layout_mode = 1
+		solid_bg.anchors_preset = 15
+		solid_bg.anchor_right = 1.0
+		solid_bg.anchor_bottom = 1.0
+		solid_bg.grow_horizontal = 2
+		solid_bg.grow_vertical = 2
+		solid_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		solid_bg.show_behind_parent = true
+		btn.add_child(solid_bg)
+		btn.move_child(solid_bg, 0)
+	solid_bg.color = tint_normal
+
+	# Agregar sillar.png repetido encima de SolidBG pero detrás de la tipografía
 	var tex = load("res://Sprites/Prueba/sillar.png")
 	if not tex:
 		return
@@ -125,10 +167,10 @@ func _apply_sillar_tiling_to_button(btn: Button, tint_normal: Color, tint_hover:
 		sillar_rect.texture = tex
 		sillar_rect.stretch_mode = TextureRect.STRETCH_TILE
 		sillar_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		sillar_rect.show_behind_parent = true
 		btn.add_child(sillar_rect)
-		btn.move_child(sillar_rect, 0)
+		btn.move_child(sillar_rect, 1)
 		
-	# Escala diminuta (0.06) para que los bloques de sillar sean muy pequeños y se repitan decenas de veces
 	var tile_scale = 0.06
 	sillar_rect.scale = Vector2(tile_scale, tile_scale)
 	sillar_rect.self_modulate = tint_normal
@@ -140,18 +182,25 @@ func _apply_sillar_tiling_to_button(btn: Button, tint_normal: Color, tint_hover:
 	btn.add_theme_color_override("font_focus_color", text_color)
 	
 	var update_size = func():
-		if is_instance_valid(btn) and is_instance_valid(sillar_rect):
-			sillar_rect.size = btn.size / tile_scale
+		if is_instance_valid(btn):
+			if is_instance_valid(solid_bg):
+				solid_bg.size = btn.size
+			if is_instance_valid(sillar_rect):
+				sillar_rect.size = btn.size / tile_scale
 			
 	update_size.call()
 	if not btn.resized.is_connected(update_size):
 		btn.resized.connect(update_size)
 		
 	btn.mouse_entered.connect(func():
+		if is_instance_valid(solid_bg):
+			solid_bg.color = tint_hover
 		if is_instance_valid(sillar_rect):
 			sillar_rect.self_modulate = tint_hover
 	)
 	btn.mouse_exited.connect(func():
+		if is_instance_valid(solid_bg):
+			solid_bg.color = tint_normal
 		if is_instance_valid(sillar_rect):
 			sillar_rect.self_modulate = tint_normal
 	)
@@ -160,14 +209,14 @@ func _apply_sillar_tiling_styles() -> void:
 	# Botón JUGAR (Pastel Menta Suave)
 	_apply_sillar_tiling_to_button(
 		play_button,
-		Color(0.68, 0.88, 0.78, 0.98),
-		Color(0.78, 0.95, 0.86, 1.0),
+		Color(0.68, 0.88, 0.78),
+		Color(0.78, 0.95, 0.86),
 		Color(0.08, 0.25, 0.18)
 	)
 	
 	# Botones Generales (Pastel Crema / Sillar de Arequipa Claro)
-	var norm_color = Color(0.92, 0.90, 0.85, 0.98)
-	var hov_color = Color(0.98, 0.96, 0.92, 1.0)
+	var norm_color = Color(0.92, 0.90, 0.85)
+	var hov_color = Color(0.98, 0.96, 0.92)
 	var dark_txt = Color(0.16, 0.16, 0.22)
 	
 	for btn in [settings_button, credits_button, help_button, credits_back_button, settings_back_button, level_select_back_button, test_unlock_button]:
@@ -176,8 +225,8 @@ func _apply_sillar_tiling_styles() -> void:
 	# Botón SALIR (Pastel Coral / Rosado Suave)
 	_apply_sillar_tiling_to_button(
 		quit_button,
-		Color(0.94, 0.72, 0.74, 0.98),
-		Color(0.98, 0.82, 0.84, 1.0),
+		Color(0.94, 0.72, 0.74),
+		Color(0.98, 0.82, 0.84),
 		Color(0.38, 0.12, 0.15)
 	)
 
@@ -338,6 +387,9 @@ func _on_level_back_pressed() -> void:
 	menu_tween.tween_property(main_menu_container, "scale", Vector2(1.0, 1.0), 0.3)
 
 func _on_level_card_pressed(level_num: int) -> void:
+	print("[LOG MainMenu] === EVENTO CLICK RECIBIDO EN TARJETA DE NIVEL ===")
+	print("[LOG MainMenu] Nivel pulsado: %d | Nivel máximo desbloqueado: %d" % [level_num, max_unlocked_level])
+
 	var card: LevelCardItem = _card_items.get(level_num, null)
 	var level_name = "Nivel %d" % level_num
 	var config_path = "res://Data/level_%d.tres" % level_num
@@ -347,19 +399,21 @@ func _on_level_card_pressed(level_num: int) -> void:
 			level_name = cfg.level_name
 
 	if level_num <= max_unlocked_level:
-		print("Nivel seleccionado: %s (Nivel %d) [Recurso: %s]" % [level_name, level_num, config_path])
-		_show_log_banner("Nivel %d: %s" % [level_num, level_name])
+		print("[LOG MainMenu] Nivel %d DESBLOQUEADO (%s). Iniciando nivel..." % [level_num, level_name])
+		_show_log_banner("Iniciando Nivel %d: %s" % [level_num, level_name])
 
 		if card:
 			card.play_bounce()
-			var tween = create_tween()
-			tween.tween_interval(0.2)
-			tween.tween_callback(func():
-				if get_node_or_null("/root/GameGlobals"):
-					get_node("/root/GameGlobals").select_and_start_level(level_num)
-			)
+
+		if get_node_or_null("/root/GameGlobals"):
+			print("[LOG MainMenu] Invocando GameGlobals.select_and_start_level(%d)..." % level_num)
+			get_node("/root/GameGlobals").select_and_start_level(level_num)
+		else:
+			print("[LOG MainMenu] ALERTA: /root/GameGlobals no existe. Cambiando directamente a dani.tscn...")
+			var err = get_tree().change_scene_to_file("res://Scene/DaniPrueba/dani.tscn")
+			print("[LOG MainMenu] Resultado de cambio directo: %d" % err)
 	else:
-		print("Nivel %d bloqueado (%s): Debes superar el nivel anterior primero." % [level_num, level_name])
+		print("[LOG MainMenu] Nivel %d BLOQUEADO. Requiere superar nivel %d." % [level_num, level_num - 1])
 		_show_log_banner("🔒 Completa el Nivel %d primero" % (level_num - 1))
 
 		if card:

@@ -55,26 +55,33 @@ var _ai_powerup_counts: Dictionary = {
 	"sobrepoblacion": 0
 }
 
+# Variables para arrastrar y soltar (drag and drop) de powerups
+var _dragged_powerup_type: String = ""
+var _dragged_powerup_index: int = -1
+var _drag_preview: TextureRect = null
+var _animation_playing: bool = false
+var _invulnerable_cells: Dictionary = {}
+
 const POWERUP_DETAILS = {
 	"asentamiento": {
 		"title": "ASENTAMIENTO",
-		"player_desc": "El Player selecciona una casilla a cualquier distancia.\nEfecto: Fogata en el Bosque (sonido de construcción).",
-		"volcan_desc": "Bola de magma.\nEfecto: Explosión."
+		"player_desc": "Coloca un asentamiento a cualquier distancia en una celda libre (sin lava).\nEfecto: Animación de martillazo.",
+		"volcan_desc": "Lanza una bola de fuego a una celda libre.\nEfecto: Convierte a volcán."
 	},
 	"restauracion": {
 		"title": "RESTAURACIÓN",
-		"player_desc": "El Player selecciona una celda enemiga y la convierte.\nEfecto: Lluvia sobre el Agua (sonido de lluvia).",
-		"volcan_desc": "Provoca fuegos en celdas enemigas.\nEfecto: Sonidos de quemaduras."
+		"player_desc": "Restaura una celda adyacente con lava convirtiéndola en agua.\nEfecto: Animación de lluvia.",
+		"volcan_desc": "Genera fuego en una celda del jugador convirtiéndola en lava.\nEfecto: Columna de fuego."
 	},
 	"bloqueo": {
 		"title": "BLOQUEO",
-		"player_desc": "El Player bloquea una celda por x turnos.\nEfecto: Martillazo en la Fuente (sonido de construcción).",
-		"volcan_desc": "Expansión de lava y bloqueo de celda.\nEfecto: Sonido de lava."
+		"player_desc": "Vuelve una de tus celdas invulnerable para siempre a la restauración.\nEfecto: Animación de martillazo.",
+		"volcan_desc": "Vuelve una celda de lava invulnerable para siempre a la restauración.\nEfecto: Expansión de magma."
 	},
 	"sobrepoblacion": {
 		"title": "SOBREPOBLACIÓN",
-		"player_desc": "El Player ocupa dos casillas disponibles aleatoriamente.\nEfecto: Confeti en las Casas (sonido de celebración).",
-		"volcan_desc": "Lanza varias bolas de magma.\nEfecto: Explosiones múltiples."
+		"player_desc": "Se activa con clic. Ocupa dos celdas adyacentes vacías aleatoriamente.\nEfecto: Lluvia de confeti.",
+		"volcan_desc": "Lanza 3 bolas de magma a celdas del jugador convirtiéndolas en lava.\nEfecto: Explosiones múltiples."
 	}
 }
 
@@ -132,6 +139,8 @@ const INVALID_NEIGHBOR := Vector2i(-99999, -99999)
 @onready var result_level_select_button: Button = $HUD/ResultDialog/Margin/VBox/ButtonsHBox/LevelSelectBtn
 
 func _ready() -> void:
+	print("[LOG BoardView] _ready() INICIADO en escena dani.tscn")
+
 	# Activar flag de ruleta al iniciar
 	_roulette_active = true
 
@@ -142,9 +151,18 @@ func _ready() -> void:
 	# Cargar nivel desde el Singleton global si está disponible
 	if get_node_or_null("/root/GameGlobals") and get_node("/root/GameGlobals").selected_level_config:
 		level_config = get_node("/root/GameGlobals").selected_level_config
+		print("[LOG BoardView] Nivel cargado desde GameGlobals: %s (%s)" % [level_config.resource_path, level_config.level_name])
+	else:
+		print("[LOG BoardView] Usando level_config predeterminado: %s" % level_config.level_name)
 
 	# Asegurar que el árbol no esté pausado
 	get_tree().paused = false
+
+	# Precargar inventario del jugador con los 4 tipos de powerups para testeo completo de las nuevas mecánicas
+	_player_powerups.append("asentamiento")
+	_player_powerups.append("restauracion")
+	_player_powerups.append("bloqueo")
+	_player_powerups.append("sobrepoblacion")
 
 	# Inicializar HUD
 	_setup_hud()
@@ -157,10 +175,29 @@ func _ready() -> void:
 	_draw_board(_board_coords)
 	_distribute_powerups()
 	_setup_game(_board_coords)
-	camera.setup_limits(_board_coords, tile_map_layer, HEX_SIZE)
-	
+	if camera:
+		camera.setup_limits(_board_coords, tile_map_layer, HEX_SIZE)
+
+	# Aplicar las 2 fuentes globales (MoonlitFlow-Regular y MoonlitFlow-Italic) a todo el HUD
+	_apply_custom_fonts(self)
+
 	# Ejecutar ruleta de cartas
 	_run_card_roulette()
+	print("[LOG BoardView] _ready() FINALIZADO EXITOSAMENTE. Nivel listo para jugar!")
+
+func _apply_custom_fonts(node: Node) -> void:
+	var font_reg = load("res://Font/MoonlitFlow-Regular.ttf")
+	var font_ita = load("res://Font/MoonlitFlow-Italic.ttf")
+	
+	if node is Label or node is Button or node is LineEdit or node is RichTextLabel:
+		var node_name = node.name.to_lower()
+		if "sub" in node_name or "desc" in node_name or "badge" in node_name or "info" in node_name or "objective" in node_name:
+			node.add_theme_font_override("font", font_ita)
+		else:
+			node.add_theme_font_override("font", font_reg)
+			
+	for child in node.get_children():
+		_apply_custom_fonts(child)
 
 func _setup_hud() -> void:
 	# 1. Configuración de Banner Central
@@ -270,6 +307,19 @@ func _update_volume_labels() -> void:
 
 # --- CONTROL DE ENTRADA Y DESPAUSADO POR CLICK ---
 func _input(event: InputEvent) -> void:
+	if _animation_playing:
+		return
+		
+	if _dragged_powerup_type != "":
+		if event is InputEventMouseMotion:
+			_update_drag_preview_pos(event.position)
+			get_viewport().set_input_as_handled()
+			return
+		elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+			_drop_dragged_powerup(event.position)
+			get_viewport().set_input_as_handled()
+			return
+
 	if get_tree().paused and pause_overlay.visible:
 		if event is InputEventMouseButton and event.pressed:
 			get_tree().paused = false
@@ -390,8 +440,378 @@ func _distribute_powerups() -> void:
 		
 		_powerup_tweens.append(tween)
 
+func _start_drag_powerup(type: String, index: int, texture: Texture2D) -> void:
+	_dragged_powerup_type = type
+	_dragged_powerup_index = index
+	
+	_close_powerup_popup()
+	
+	_drag_preview = TextureRect.new()
+	_drag_preview.name = "DragPreview"
+	_drag_preview.texture = texture
+	_drag_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_drag_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_drag_preview.size = Vector2(48, 48)
+	_drag_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_drag_preview.modulate = Color(1.0, 1.0, 1.0)
+	hud.add_child(_drag_preview)
+	_update_drag_preview_pos(get_viewport().get_mouse_position())
+
+func _update_drag_preview_pos(screen_pos: Vector2) -> void:
+	if is_instance_valid(_drag_preview):
+		_drag_preview.global_position = screen_pos - _drag_preview.size / 2.0
+
+func _drop_dragged_powerup(screen_pos: Vector2) -> void:
+	var type = _dragged_powerup_type
+	var index = _dragged_powerup_index
+	
+	_dragged_powerup_type = ""
+	_dragged_powerup_index = -1
+	
+	if is_instance_valid(_drag_preview):
+		_drag_preview.queue_free()
+		_drag_preview = null
+		
+	var world_pos = get_global_mouse_position()
+	var local_pos = tile_map_layer.to_local(world_pos)
+	var cell = tile_map_layer.local_to_map(local_pos)
+	
+	var is_valid_drop = false
+	if game and game.board:
+		if type == "asentamiento":
+			var is_on_board = _board_coords.has(cell)
+			var has_lava = (game.board.get_piece_at(cell) == AI_PLAYER_ID)
+			var is_empty = (game.board.get_piece_at(cell) == -1)
+			is_valid_drop = is_on_board and not has_lava and is_empty
+		elif type == "restauracion":
+			var is_on_board = _board_coords.has(cell)
+			var has_lava = (game.board.get_piece_at(cell) == AI_PLAYER_ID)
+			var is_adjacent = game.board._has_occupied_neighbor(cell)
+			var is_not_invulnerable = not _invulnerable_cells.has(cell)
+			is_valid_drop = is_on_board and has_lava and is_adjacent and is_not_invulnerable
+		elif type == "bloqueo":
+			var is_on_board = _board_coords.has(cell)
+			var has_player_piece = (game.board.get_piece_at(cell) == HUMAN_PLAYER_ID)
+			is_valid_drop = is_on_board and has_player_piece
+		else:
+			is_valid_drop = game.board.can_place_at(cell)
+			
+	if is_valid_drop:
+		# Consumir el powerup
+		if index >= 0 and index < _player_powerups.size():
+			_player_powerups.remove_at(index)
+			_update_powerups_hud()
+			
+		print("🎯 Powerup '", type, "' usado exitosamente en la celda ", cell)
+		
+		# Bloquear entrada mientras se reproduce la animación del powerup
+		_animation_playing = true
+		
+		if type == "asentamiento":
+			var cell_local_pos = tile_map_layer.map_to_local(cell)
+			# 1. Reproducir la animación del martillo
+			ParticleEffects.play_hammer_strike(tile_map_layer, cell_local_pos)
+			
+			# 2. Esperar que termine la animación de partículas (0.65 segundos) y colocar la casilla del atlas
+			get_tree().create_timer(0.65).timeout.connect(func():
+				_animation_playing = false
+				if not game.game_over:
+					# Colocar la pieza en el tablero de juego (bypass de can_place_at)
+					game.board._cells[cell] = HUMAN_PLAYER_ID
+					
+					# Emitir piece_placed para recolectar powerups si los hay y actualizar celdas
+					game.piece_placed.emit(cell, HUMAN_PLAYER_ID)
+					
+					# Poner el atlas coord de asentamiento
+					var asentamiento_coord = POWERUP_ATLAS_COORDS["asentamiento"]
+					tile_map_layer.set_cell(cell, SOURCE_ID, asentamiento_coord)
+					
+					# Verificar ganador
+					if game.board.check_winner_at(cell, HUMAN_PLAYER_ID):
+						game.game_over = true
+						game.game_won.emit(HUMAN_PLAYER_ID)
+					# Verificar empate
+					elif not game.board.has_valid_moves():
+						game.game_over = true
+						game.game_won.emit(0)
+					else:
+						# Cambiar turno al rival (IA)
+						game.current_player = AI_PLAYER_ID
+						game.turn_changed.emit(AI_PLAYER_ID)
+			)
+		elif type == "restauracion":
+			var cell_local_pos = tile_map_layer.map_to_local(cell)
+			# 1. Reproducir la animación de lluvia
+			ParticleEffects.play_rain_effect(tile_map_layer, cell_local_pos)
+			
+			# 2. Esperar que termine la animación (3.0 segundos) y colocar la casilla del atlas
+			get_tree().create_timer(3.0).timeout.connect(func():
+				_animation_playing = false
+				if not game.game_over:
+					# Cambiar la pieza de lava del volcán/IA (1) a humano (2) en el tablero lógico
+					game.board._cells[cell] = HUMAN_PLAYER_ID
+					
+					# Emitir piece_placed
+					game.piece_placed.emit(cell, HUMAN_PLAYER_ID)
+					
+					# Poner el atlas coord de restauración
+					var restauracion_coord = POWERUP_ATLAS_COORDS["restauracion"]
+					tile_map_layer.set_cell(cell, SOURCE_ID, restauracion_coord)
+					
+					# Verificar ganador
+					if game.board.check_winner_at(cell, HUMAN_PLAYER_ID):
+						game.game_over = true
+						game.game_won.emit(HUMAN_PLAYER_ID)
+					# Verificar empate
+					elif not game.board.has_valid_moves():
+						game.game_over = true
+						game.game_won.emit(0)
+					else:
+						# Cambiar turno al rival (IA)
+						game.current_player = AI_PLAYER_ID
+						game.turn_changed.emit(AI_PLAYER_ID)
+			)
+		elif type == "bloqueo":
+			var cell_local_pos = tile_map_layer.map_to_local(cell)
+			# 1. Reproducir la animación del martillo
+			ParticleEffects.play_hammer_strike(tile_map_layer, cell_local_pos)
+			
+			# 2. Esperar a que termine la animación (0.65 segundos) y bloquear la celda
+			get_tree().create_timer(0.65).timeout.connect(func():
+				_animation_playing = false
+				if not game.game_over:
+					# Hacer invulnerable
+					_invulnerable_cells[cell] = true
+					
+					# Modificar el atlas en el TileMapLayer a la textura de bloqueo del Player (1,1)
+					tile_map_layer.set_cell(cell, SOURCE_ID, Vector2i(1, 1))
+					
+					# Cambiar el turno al rival (IA)
+					game.current_player = AI_PLAYER_ID
+					game.turn_changed.emit(AI_PLAYER_ID)
+			)
+		else:
+			_animation_playing = false
+			# Otros powerups provisionalmente ejecutan colocación normal
+			game.play_at(cell)
+	else:
+		print("❌ Celda inválida para usar powerup: ", cell)
+
+func _use_sobrepoblacion_clicked(index: int) -> void:
+	if not game or game.game_over or _animation_playing:
+		return
+		
+	var empty_cells = []
+	for coord in _board_coords:
+		if game.board.get_piece_at(coord) == -1:
+			empty_cells.append(coord)
+			
+	if empty_cells.size() < 2:
+		print("❌ No hay suficientes celdas vacías para Sobrepoblación")
+		return
+		
+	# Encontrar parejas de celdas vacías adyacentes
+	var adjacent_pairs = []
+	for cell in empty_cells:
+		var neighbors = game.board._neighbor_map.get(cell, [])
+		for n in neighbors:
+			if n != INVALID_NEIGHBOR and game.board.get_piece_at(n) == -1:
+				var pair = [cell, n]
+				if cell.x > n.x or (cell.x == n.x and cell.y > n.y):
+					pair = [n, cell]
+				if not adjacent_pairs.has(pair):
+					adjacent_pairs.append(pair)
+					
+	var cell1: Vector2i
+	var cell2: Vector2i
+	
+	if not adjacent_pairs.is_empty():
+		var chosen_pair = adjacent_pairs.pick_random()
+		cell1 = chosen_pair[0]
+		cell2 = chosen_pair[1]
+	else:
+		empty_cells.shuffle()
+		cell1 = empty_cells[0]
+		cell2 = empty_cells[1]
+		
+	# Consumir el powerup
+	if index >= 0 and index < _player_powerups.size():
+		_player_powerups.remove_at(index)
+		_update_powerups_hud()
+		
+	print("🎉 Sobrepoblación activada en celdas: ", cell1, " y ", cell2)
+	_animation_playing = true
+	
+	var cell1_pos = tile_map_layer.map_to_local(cell1)
+	var cell2_pos = tile_map_layer.map_to_local(cell2)
+	
+	ParticleEffects.play_confetti_effect(tile_map_layer, cell1_pos)
+	ParticleEffects.play_confetti_effect(tile_map_layer, cell2_pos)
+	
+	get_tree().create_timer(2.5).timeout.connect(func():
+		_animation_playing = false
+		if not game.game_over:
+			game.board._cells[cell1] = HUMAN_PLAYER_ID
+			game.board._cells[cell2] = HUMAN_PLAYER_ID
+			
+			game.piece_placed.emit(cell1, HUMAN_PLAYER_ID)
+			game.piece_placed.emit(cell2, HUMAN_PLAYER_ID)
+			
+			var player_coord = _get_random_player2_coord()
+			tile_map_layer.set_cell(cell1, SOURCE_ID, player_coord)
+			tile_map_layer.set_cell(cell2, SOURCE_ID, player_coord)
+			
+			_check_game_end_and_change_turn(HUMAN_PLAYER_ID, cell2)
+	)
+
+func _check_game_end_and_change_turn(player_id: int, last_coord: Vector2i) -> void:
+	if game.board.check_winner_at(last_coord, player_id):
+		game.game_over = true
+		game.game_won.emit(player_id)
+	elif not game.board.has_valid_moves():
+		game.game_over = true
+		game.game_won.emit(0)
+	else:
+		var next_player = HUMAN_PLAYER_ID if player_id == AI_PLAYER_ID else AI_PLAYER_ID
+		game.current_player = next_player
+		game.turn_changed.emit(next_player)
+
+func _try_ai_use_powerup() -> bool:
+	var powerups_copy = _ai_powerups.duplicate()
+	powerups_copy.shuffle()
+	
+	for powerup in powerups_copy:
+		if _execute_ai_powerup(powerup):
+			_ai_powerups.erase(powerup)
+			if _ai_powerup_counts.has(powerup):
+				_ai_powerup_counts[powerup] = max(0, _ai_powerup_counts[powerup] - 1)
+			return true
+	return false
+
+func _execute_ai_powerup(type: String) -> bool:
+	if not game or game.game_over:
+		return false
+		
+	if type == "asentamiento":
+		var targets = []
+		for coord in _board_coords:
+			if game.board.get_piece_at(coord) != AI_PLAYER_ID:
+				targets.append(coord)
+		if targets.is_empty():
+			return false
+			
+		var target = targets.pick_random()
+		var start_cell = _board_coords.pick_random()
+		while start_cell == target:
+			start_cell = _board_coords.pick_random()
+			
+		var start_pos = tile_map_layer.map_to_local(start_cell)
+		var target_pos = tile_map_layer.map_to_local(target)
+		
+		print("🤖 IA usa ASENTAMIENTO: Lanzando bola de fuego sobre celda ", target)
+		_animation_playing = true
+		ParticleEffects.launch_fireball(tile_map_layer, start_pos, target_pos)
+		
+		get_tree().create_timer(1.0).timeout.connect(func():
+			_animation_playing = false
+			if not game.game_over:
+				game.board._cells[target] = AI_PLAYER_ID
+				game.piece_placed.emit(target, AI_PLAYER_ID)
+				tile_map_layer.set_cell(target, SOURCE_ID, Vector2i(4, 0))
+				_check_game_end_and_change_turn(AI_PLAYER_ID, target)
+		)
+		return true
+		
+	elif type == "restauracion":
+		var targets = []
+		for coord in _board_coords:
+			if game.board.get_piece_at(coord) == HUMAN_PLAYER_ID and not _invulnerable_cells.has(coord):
+				targets.append(coord)
+		if targets.is_empty():
+			return false
+			
+		var target = targets.pick_random()
+		var target_pos = tile_map_layer.map_to_local(target)
+		
+		print("🤖 IA usa RESTAURACIÓN: Generando columna de fuego en celda de jugador ", target)
+		_animation_playing = true
+		ParticleEffects.play_fire_effect(tile_map_layer, target_pos)
+		
+		get_tree().create_timer(2.0).timeout.connect(func():
+			_animation_playing = false
+			if not game.game_over:
+				game.board._cells[target] = AI_PLAYER_ID
+				game.piece_placed.emit(target, AI_PLAYER_ID)
+				tile_map_layer.set_cell(target, SOURCE_ID, Vector2i(3, 2))
+				_check_game_end_and_change_turn(AI_PLAYER_ID, target)
+		)
+		return true
+		
+	elif type == "bloqueo":
+		var targets = []
+		for coord in _board_coords:
+			if game.board.get_piece_at(coord) == AI_PLAYER_ID and not _invulnerable_cells.has(coord):
+				targets.append(coord)
+		if targets.is_empty():
+			return false
+			
+		var target = targets.pick_random()
+		var target_pos = tile_map_layer.map_to_local(target)
+		
+		print("🤖 IA usa BLOQUEO: Volviendo celda de lava ", target, " invulnerable")
+		_animation_playing = true
+		ParticleEffects.play_magma_expansion_effect(tile_map_layer, target_pos)
+		
+		get_tree().create_timer(2.0).timeout.connect(func():
+			_animation_playing = false
+			if not game.game_over:
+				_invulnerable_cells[target] = true
+				tile_map_layer.set_cell(target, SOURCE_ID, Vector2i(4, 3))
+				_check_game_end_and_change_turn(AI_PLAYER_ID, target)
+		)
+		return true
+		
+	elif type == "sobrepoblacion":
+		var targets = []
+		for coord in _board_coords:
+			if game.board.get_piece_at(coord) == HUMAN_PLAYER_ID and not _invulnerable_cells.has(coord):
+				targets.append(coord)
+		if targets.is_empty():
+			return false
+			
+		targets.shuffle()
+		var count = min(3, targets.size())
+		var chosen_targets = targets.slice(0, count)
+		
+		print("🤖 IA usa SOBREPOBLACIÓN: Lanzando 3 bolas de fuego a celdas de jugador: ", chosen_targets)
+		_animation_playing = true
+		
+		for target in chosen_targets:
+			var start_cell = _board_coords.pick_random()
+			while start_cell == target:
+				start_cell = _board_coords.pick_random()
+			var start_pos = tile_map_layer.map_to_local(start_cell)
+			var target_pos = tile_map_layer.map_to_local(target)
+			ParticleEffects.launch_fireball(tile_map_layer, start_pos, target_pos)
+			
+		get_tree().create_timer(1.0).timeout.connect(func():
+			_animation_playing = false
+			if not game.game_over:
+				var last_target = null
+				for target in chosen_targets:
+					game.board._cells[target] = AI_PLAYER_ID
+					game.piece_placed.emit(target, AI_PLAYER_ID)
+					tile_map_layer.set_cell(target, SOURCE_ID, Vector2i(4, 0))
+					last_target = target
+				if last_target != null:
+					_check_game_end_and_change_turn(AI_PLAYER_ID, last_target)
+		)
+		return true
+		
+	return false
+
 func _unhandled_input(event: InputEvent) -> void:
-	if _roulette_active or game.game_over or get_tree().paused:
+	if _roulette_active or game.game_over or get_tree().paused or _animation_playing:
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_G:
 		print("🔥 Tecla 'G' presionada: Lanzando bola de fuego parabólica entre 2 celdas aleatorias...")
@@ -404,6 +824,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Z:
 		print("🌧️ Tecla 'Z' presionada: Iniciando efecto de lluvia 3D en celda aleatoria (3 seg)...")
 		_launch_test_rain()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_X:
+		print("🔥 Tecla 'X' presionada: Lanzando columna de fuego en celda aleatoria...")
+		_launch_test_fire()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_C:
+		print("🌋 Tecla 'C' presionada: Iniciando expansión radial de magma en celda aleatoria...")
+		_launch_test_magma()
+		return
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_V:
+		print("🎉 Tecla 'V' presionada: Iniciando lluvia festiva de confeti en celda aleatoria...")
+		_launch_test_confetti()
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
@@ -438,6 +870,33 @@ func _launch_test_rain() -> void:
 	var target_cell: Vector2i = coords_copy[0]
 	var cell_local_pos: Vector2 = tile_map_layer.map_to_local(target_cell)
 	ParticleEffects.play_rain_effect(tile_map_layer, cell_local_pos)
+
+func _launch_test_fire() -> void:
+	if _board_coords.is_empty():
+		return
+	var coords_copy = _board_coords.duplicate()
+	coords_copy.shuffle()
+	var target_cell: Vector2i = coords_copy[0]
+	var cell_local_pos: Vector2 = tile_map_layer.map_to_local(target_cell)
+	ParticleEffects.play_fire_effect(tile_map_layer, cell_local_pos)
+
+func _launch_test_magma() -> void:
+	if _board_coords.is_empty():
+		return
+	var coords_copy = _board_coords.duplicate()
+	coords_copy.shuffle()
+	var target_cell: Vector2i = coords_copy[0]
+	var cell_local_pos: Vector2 = tile_map_layer.map_to_local(target_cell)
+	ParticleEffects.play_magma_expansion_effect(tile_map_layer, cell_local_pos)
+
+func _launch_test_confetti() -> void:
+	if _board_coords.is_empty():
+		return
+	var coords_copy = _board_coords.duplicate()
+	coords_copy.shuffle()
+	var target_cell: Vector2i = coords_copy[0]
+	var cell_local_pos: Vector2 = tile_map_layer.map_to_local(target_cell)
+	ParticleEffects.play_confetti_effect(tile_map_layer, cell_local_pos)
 
 func _process(_delta: float) -> void:
 	if _roulette_active or not game or game.game_over or get_tree().paused:
@@ -536,7 +995,12 @@ func _update_powerups_hud() -> void:
 			
 			tex_rect.gui_input.connect(func(event: InputEvent):
 				if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-					print("⚡ Powerup cliqueado en barra HUD (Jugador): ", powerup_type)
+					if powerup_type == "sobrepoblacion":
+						print("⚡ Click en Sobrepoblación: Activando efecto de inmediato...")
+						_use_sobrepoblacion_clicked(i)
+					else:
+						print("⚡ Powerup arrastrándose desde barra HUD (Jugador): ", powerup_type)
+						_start_drag_powerup(powerup_type, i, tex_rect.texture)
 			)
 			
 			slot_node.add_child(tex_rect)
@@ -741,6 +1205,12 @@ func _maybe_trigger_ai_turn() -> void:
 	await get_tree().create_timer(AI_MOVE_DELAY).timeout
 	if game.game_over or get_tree().paused:
 		return
+		
+	# Si la IA tiene algún powerup disponible, intenta usarlo de forma aleatoria como su movimiento del turno
+	if not _ai_powerups.is_empty():
+		if _try_ai_use_powerup():
+			return # El uso del poder consumió el turno, salir de inmediato!
+			
 	var move: Vector2i = ai.choose_move(_board_coords)
 	game.play_at(move)
 
@@ -769,6 +1239,13 @@ func _on_game_won(player_id: int) -> void:
 	result_dialog.visible = true
 	result_dialog.modulate.a = 0.0
 	result_dialog.scale = Vector2(0.85, 0.85)
+	
+	# Hacer que el panel de result_dialog sea translúcido para ver el tablero y resultado detrás
+	var style = result_dialog.get_theme_stylebox("panel").duplicate()
+	if style is StyleBoxFlat:
+		style.bg_color.a = 0.40 # Opacidad de fondo al 65%
+		result_dialog.add_theme_stylebox_override("panel", style)
+		
 	result_dialog.pivot_offset = result_dialog.size / 2.0
 
 	var level_num: int = 1
