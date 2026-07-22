@@ -26,7 +26,8 @@ const LEVEL_CARD_PREFAB = preload("res://Scene/MenuPrincipal/level_card_item.tsc
 @onready var level_select_overlay: Control = $LevelSelectOverlay
 @onready var level_select_back_button: Button = $LevelSelectOverlay/MarginContainer/VBoxContainer/Footer/BackButton
 @onready var test_unlock_button: Button = $LevelSelectOverlay/MarginContainer/VBoxContainer/Footer/TestUnlockButton
-@onready var levels_container: VBoxContainer = $LevelSelectOverlay/MarginContainer/VBoxContainer/ScrollContainer/LevelsContainer
+# @onready var levels_container: VBoxContainer = $LevelSelectOverlay/MarginContainer/VBoxContainer/ScrollContainer/LevelsContainer
+var level_map_view: Node2D
 
 var _log_tween: Tween
 
@@ -114,7 +115,7 @@ func _ready() -> void:
 	_apply_sillar_tiling_styles()
 
 	# Construir tarjetas dinámicas de nivel
-	_build_level_cards()
+	#_build_level_cards()
 
 	# Animación de entrada inicial del título y menú principal
 	main_menu_container.modulate.a = 0.0
@@ -122,7 +123,21 @@ func _ready() -> void:
 	var tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(main_menu_container, "modulate:a", 1.0, 0.6)
 	tween.tween_property(main_menu_container, "position:y", main_menu_container.position.y - 20, 0.6)
+	level_map_view = get_node_or_null("LevelSelectOverlay/MarginContainer/VBoxContainer/LevelMapViewport/SubViewport/LevelMapView")
 
+	if level_map_view:
+		level_map_view.level_chosen.connect(_on_level_card_pressed)
+	else:
+		push_warning("level_map_view no encontrado en _ready, reintentando en el siguiente frame")
+		call_deferred("_connect_level_map_deferred")
+		
+func _connect_level_map_deferred() -> void:
+	level_map_view = get_node_or_null("LevelSelectOverlay/MarginContainer/VBoxContainer/LevelMapViewport/SubViewport/LevelMapView")
+	if level_map_view:
+		level_map_view.level_chosen.connect(_on_level_card_pressed)
+	else:
+		push_error("level_map_view sigue sin existir - revisa que esté guardado en la escena .tscn")
+		
 func _apply_custom_fonts(node: Node) -> void:
 	var font_reg = load("res://Font/MoonlitFlow-Regular.ttf")
 	var font_ita = load("res://Font/MoonlitFlow-Italic.ttf")
@@ -240,31 +255,6 @@ func _apply_sillar_tiling_styles() -> void:
 		Color(0.98, 0.82, 0.84),
 		Color(0.38, 0.12, 0.15)
 	)
-
-func _build_level_cards() -> void:
-	for child in levels_container.get_children():
-		child.queue_free()
-	_card_items.clear()
-
-	var total_levels: int = 15
-	if get_node_or_null("/root/GameGlobals"):
-		total_levels = get_node("/root/GameGlobals").TOTAL_LEVELS
-
-	for i in range(1, total_levels + 1):
-		var card: LevelCardItem = LEVEL_CARD_PREFAB.instantiate() as LevelCardItem
-		levels_container.add_child(card)
-		
-		var level_name = "Nivel %d" % i
-		var config_path = "res://Data/level_%d.tres" % i
-		if ResourceLoader.exists(config_path):
-			var cfg = load(config_path) as LevelConfig
-			if cfg and not cfg.level_name.is_empty():
-				level_name = cfg.level_name
-		
-		var is_unlocked = (i <= max_unlocked_level)
-		card.setup_card(i, level_name, is_unlocked)
-		card.card_selected.connect(_on_level_card_pressed)
-		_card_items[i] = card
 
 func _update_level_cards_ui() -> void:
 	var total_levels: int = 15

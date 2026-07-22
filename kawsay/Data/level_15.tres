@@ -1,11 +1,29 @@
 [gd_resource type="Resource" script_class="LevelConfig" format=3 uid="uid://17etxweb7jr6"]
 
 [ext_resource type="Script" uid="uid://cnj7lywfb6vtt" path="res://Scripts/Level/LevelConfig.gd" id="1_eb8a2"]
+[ext_resource type="Script" uid="uid://unnkle6ixhu" path="res://Scripts/Level/WinCondition.gd" id="2_6cyam"]
+
+[sub_resource type="Resource" id="Resource_0p3qc"]
+script = ExtResource("2_6cyam")
+required_count = 4
+metadata/_custom_type_script = "uid://unnkle6ixhu"
+
+[sub_resource type="Resource" id="Resource_7wyw0"]
+script = ExtResource("2_6cyam")
+required_length = 5
+required_count = 4
+metadata/_custom_type_script = "uid://unnkle6ixhu"
+
+[sub_resource type="Resource" id="Resource_8w7sf"]
+script = ExtResource("2_6cyam")
+required_length = 7
+metadata/_custom_type_script = "uid://unnkle6ixhu"
 
 [resource]
 script = ExtResource("1_eb8a2")
 level_name = "Cráter del Misti – Boca Erupción"
 generation_mode = 2
+win_conditions = Array[ExtResource("2_6cyam")]([SubResource("Resource_0p3qc"), SubResource("Resource_7wyw0"), SubResource("Resource_8w7sf")])
 ai_difficulty = 6
 width = 35
 height = 35

@@ -1,11 +1,29 @@
 [gd_resource type="Resource" script_class="LevelConfig" format=3 uid="uid://bl6lvanqfnjsn"]
 
 [ext_resource type="Script" uid="uid://cnj7lywfb6vtt" path="res://Scripts/Level/LevelConfig.gd" id="1_eb8a2"]
+[ext_resource type="Script" uid="uid://unnkle6ixhu" path="res://Scripts/Level/WinCondition.gd" id="2_vjhro"]
+
+[sub_resource type="Resource" id="Resource_akab5"]
+script = ExtResource("2_vjhro")
+required_count = 3
+metadata/_custom_type_script = "uid://unnkle6ixhu"
+
+[sub_resource type="Resource" id="Resource_51pbs"]
+script = ExtResource("2_vjhro")
+required_length = 3
+required_count = 3
+metadata/_custom_type_script = "uid://unnkle6ixhu"
+
+[sub_resource type="Resource" id="Resource_68ibw"]
+script = ExtResource("2_vjhro")
+required_length = 5
+metadata/_custom_type_script = "uid://unnkle6ixhu"
 
 [resource]
 script = ExtResource("1_eb8a2")
 level_name = "Alto Selva Alegre – Último Pueblo"
 generation_mode = 2
+win_conditions = Array[ExtResource("2_vjhro")]([SubResource("Resource_akab5"), SubResource("Resource_51pbs"), SubResource("Resource_68ibw")])
 ai_difficulty = 3
 width = 20
 height = 16

@@ -103,10 +103,19 @@ func pan_by(delta: Vector2) -> void:
 		clamp(new_pos.x, -_pan_limit.x, _pan_limit.x),
 		clamp(new_pos.y, -_pan_limit.y, _pan_limit.y)
 	)
-
+func setup_limits_rect(half_map_size: Vector2) -> void:
+	var margin: float = 60.0  # margen fijo en píxeles, ajusta a gusto
+	_pan_limit = half_map_size + Vector2(margin, margin)
+	position = Vector2.ZERO
 func _apply_zoom(amount: float) -> void:
 	var new_zoom: float = clamp(zoom.x + amount, min_zoom, max_zoom)
 	zoom = Vector2(new_zoom, new_zoom)
+func fit_to_map(map_size: Vector2, viewport_size: Vector2) -> void:
+	var zoom_x: float = viewport_size.x / map_size.x
+	var zoom_y: float = viewport_size.y / map_size.y
+	var fit_zoom: float = min(zoom_x, zoom_y)  # el menor, para que quepa completo sin recortar
 
+	zoom = Vector2(fit_zoom, fit_zoom)
+	position = Vector2.ZERO 
 func zoom_by(amount: float) -> void:
 	_apply_zoom(amount)

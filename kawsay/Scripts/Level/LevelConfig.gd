@@ -5,21 +5,13 @@ enum GenerationMode { MANUAL, RHOMBUS, HEXAGON, RANDOM }
 
 @export var level_name: String = "Nivel 1"
 @export var generation_mode: GenerationMode = GenerationMode.RANDOM
-@export var win_length: int = 4
+@export var win_conditions: Array[WinCondition] = []   # <-- reemplaza win_length
 @export var ai_difficulty: AIStrategy.Difficulty = AIStrategy.Difficulty.EASY
-# MANUAL: pintas manualmente esta lista en el Inspector (click derecho -> Add Element)
 @export var manual_coords: Array[Vector2i] = []
-
 @export var powerup_count: int = 3
-
-# RHOMBUS / RANDOM
 @export var width: int = 7
 @export var height: int = 6
-
-# HEXAGON
 @export var radius: int = 4
-
-# RANDOM
 @export var random_bite_chance: float = 0.15
 @export var random_seed: int = -1
 
@@ -35,3 +27,10 @@ func generate_coords() -> Array[Vector2i]:
 			return BoardGenerator.generate_random(width, height, random_bite_chance, random_seed)
 		_:
 			return []
+
+## Devuelve el win_length más exigente, útil como fallback para la IA/heurística.
+func get_max_required_length() -> int:
+	var max_len: int = 4
+	for wc in win_conditions:
+		max_len = max(max_len, wc.required_length)
+	return max_len

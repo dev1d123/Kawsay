@@ -217,10 +217,9 @@ func _setup_hud() -> void:
 		level_num = get_node("/root/GameGlobals").selected_level_num
 
 	var name_str = level_config.level_name if level_config else "Volcan"
-	var win_len = level_config.win_length if level_config else 4
 
 	level_name_label.text = "%s (Nivel %d)" % [name_str, level_num]
-	objective_label.text = "🎯 Objetivo: Conecta %d fichas en línea para ganar" % win_len
+	objective_label.text = "🎯 Objetivo: " + _build_objective_text()
 
 	# 2. Conexión de 4 Botones Top Right
 	selector_button.pressed.connect(_on_selector_pressed)
@@ -268,14 +267,27 @@ func _setup_hud_button_hover(btn: Button) -> void:
 		var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		tween.tween_property(btn, "scale", Vector2(1.0, 1.0), 0.15)
 	)
+func _build_objective_text() -> String:
+	if not level_config or level_config.win_conditions.is_empty():
+		return "Conecta 4 fichas en línea para ganar"
 
+	var parts: Array[String] = []
+	for wc in level_config.win_conditions:
+		if wc.required_count == 1:
+			parts.append("1 línea de %d" % wc.required_length)
+		else:
+			parts.append("%d líneas de %d" % [wc.required_count, wc.required_length])
+
+	return "Logra " + ", ".join(parts)
 # --- BOTONES Y ACCIONES DEL HUD ---
 func _on_selector_pressed() -> void:
+	_kill_all_tweens() 
 	get_tree().paused = false
 	if get_node_or_null("/root/GameGlobals"):
 		get_node("/root/GameGlobals").return_to_level_selector()
 
 func _on_restart_pressed() -> void:
+	_kill_all_tweens() 
 	get_tree().paused = false
 	get_tree().reload_current_scene()
 
@@ -353,11 +365,10 @@ func _build_neighbor_map(coords: Array[Vector2i]) -> Dictionary:
 
 func _setup_game(coords: Array[Vector2i]) -> void:
 	var neighbor_map: Dictionary = _build_neighbor_map(coords)
-	var hex_board := HexBoard.new(coords, neighbor_map, level_config.win_length)
-	game = GameManager.new(hex_board)
-
-	ai = AIFactory.create(level_config.ai_difficulty, hex_board, AI_PLAYER_ID, HUMAN_PLAYER_ID, level_config.win_length)
-
+	var hex_board := HexBoard.new(coords, neighbor_map)  # ya no recibe win_length aquí
+	game = GameManager.new(hex_board, level_config.win_conditions)
+	ai = AIFactory.create(level_config.ai_difficulty, hex_board, AI_PLAYER_ID, HUMAN_PLAYER_ID, level_config.get_max_required_length())
+	
 	game.piece_placed.connect(_on_piece_placed)
 	game.turn_changed.connect(_on_turn_changed)
 	game.game_won.connect(_on_game_won)
@@ -538,7 +549,7 @@ func _drop_dragged_powerup(screen_pos: Vector2) -> void:
 					tile_map_layer.set_cell(cell, SOURCE_ID, asentamiento_coord)
 					
 					# Verificar ganador
-					if game.board.check_winner_at(cell, HUMAN_PLAYER_ID):
+					if game.board.check_win_conditions(HUMAN_PLAYER_ID, level_config.win_conditions):
 						game.game_over = true
 						game.game_won.emit(HUMAN_PLAYER_ID)
 					# Verificar empate
@@ -679,7 +690,7 @@ func _use_sobrepoblacion_clicked(index: int) -> void:
 	)
 
 func _check_game_end_and_change_turn(player_id: int, last_coord: Vector2i) -> void:
-	if game.board.check_winner_at(last_coord, player_id):
+	if game.board.check_win_conditions(player_id, level_config.win_conditions):  # <-- cambia
 		game.game_over = true
 		game.game_won.emit(player_id)
 	elif not game.board.has_valid_moves():
@@ -1805,3 +1816,19 @@ func _connect_button(btn: Button) -> void:
 func _play_button_click() -> void:
 	if get_node_or_null("/root/AudioManager"):
 		get_node("/root/AudioManager").play_sfx("button_click")
+		
+func _kill_all_tweens() -> void:
+	for tween in _highlight_tweens:
+		if tween and tween.is_running():
+			tween.kill()
+	_highlight_tweens.clear()
+
+	for tween in _powerup_tweens:
+		if tween and tween.is_running():
+			tween.kill()
+	_powerup_tweens.clear()
+
+	if _hover_pulse_tween and _hover_pulse_tween.is_running():
+		_hover_pulse_tween.kill()
+	if _powerup_popup_tween and _powerup_popup_tween.is_running():
+		_powerup_popup_tween.kill()

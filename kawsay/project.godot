@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Kawsay"
-run/main_scene="res://Scene/MenuPrincipal/main_menu.tscn"
+run/main_scene="uid://dqxl5bjg5e2jb"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -19,14 +19,19 @@ config/icon="res://icon.svg"
 
 AudioManager="*res://Scripts/AudioManager.gd"
 GameGlobals="*res://Scripts/GameGlobals.gd"
+TooltipDisplay="*uid://cedk64vudkflv"
 
 [display]
 
-window/size/mode=3
+window/size/mode=1
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[gui]
+
+theme/custom_font="res://Font/MoonlitFlow-Regular.ttf"
 
 [physics]
 
@@ -38,7 +43,3 @@ textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-
-[gui]
-
-theme/custom_font="res://Font/MoonlitFlow-Regular.ttf"

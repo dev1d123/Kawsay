@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dnbh5yk2tu67l"]
+
+[ext_resource type="Script" uid="uid://buaded84iagyq" path="res://Scripts/Map Menu/Level_MapView.gd" id="1_podrh"]
+[ext_resource type="Script" uid="uid://bjo7jt45y20ph" path="res://Scripts/Others/Camera_Controller.gd" id="2_rd7ne"]
+[ext_resource type="Texture2D" uid="uid://x75pxgg6dfhj" path="res://Sprites/Prueba/Map.png" id="3_rd7ne"]
+
+[node name="LevelMapView" type="Node2D" unique_id=1110331614 node_paths=PackedStringArray("map_sprite", "camera")]
+script = ExtResource("1_podrh")
+map_sprite = NodePath("Sprite2D")
+camera = NodePath("Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1150518066]
+script = ExtResource("2_rd7ne")
+board_offset_units = 1.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=387810516]
+texture = ExtResource("3_rd7ne")

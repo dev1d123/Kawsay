@@ -1,10 +1,27 @@
 [gd_resource type="Resource" script_class="LevelConfig" format=3 uid="uid://bvkxs6xqjujg2"]
 
 [ext_resource type="Script" uid="uid://cnj7lywfb6vtt" path="res://Scripts/Level/LevelConfig.gd" id="1_eb8a2"]
+[ext_resource type="Script" uid="uid://unnkle6ixhu" path="res://Scripts/Level/WinCondition.gd" id="2_ws6rh"]
+
+[sub_resource type="Resource" id="Resource_qdkeg"]
+script = ExtResource("2_ws6rh")
+metadata/_custom_type_script = "uid://unnkle6ixhu"
+
+[sub_resource type="Resource" id="Resource_eg7ra"]
+script = ExtResource("2_ws6rh")
+required_length = 5
+required_count = 2
+metadata/_custom_type_script = "uid://unnkle6ixhu"
+
+[sub_resource type="Resource" id="Resource_3sxjq"]
+script = ExtResource("2_ws6rh")
+required_length = 3
+metadata/_custom_type_script = "uid://unnkle6ixhu"
 
 [resource]
 script = ExtResource("1_eb8a2")
 level_name = "Cayma – Puerta a la Montaña"
+win_conditions = Array[ExtResource("2_ws6rh")]([SubResource("Resource_qdkeg"), SubResource("Resource_eg7ra"), SubResource("Resource_3sxjq")])
 ai_difficulty = 3
 width = 15
 height = 15

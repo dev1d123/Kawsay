@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://c6j8mak7m5p1n"]
+[gd_scene format=3 uid="uid://dqxl5bjg5e2jb"]
 
 [ext_resource type="Script" uid="uid://b7grfhpe6dwr1" path="res://Scripts/MainMenu.gd" id="1_mainmenu"]
+[ext_resource type="PackedScene" uid="uid://dnbh5yk2tu67l" path="res://Scene/MenuPrincipal/LevelMapView.tscn" id="2_g4x05"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.0823529, 0.0941176, 0.141176, 1)
@@ -332,18 +333,18 @@ theme_override_font_sizes/font_size = 18
 text = "Elige un volcán para comenzar tu aventura"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer" unique_id=994704490]
-custom_minimum_size = Vector2(580, 360)
+[node name="LevelMapViewport" type="SubViewportContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer" unique_id=1783023262]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 3
-horizontal_scroll_mode = 0
 
-[node name="LevelsContainer" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1598672948]
-custom_minimum_size = Vector2(540, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 14
+[node name="SubViewport" type="SubViewport" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelMapViewport" unique_id=326968990]
+handle_input_locally = false
+physics_object_picking = true
+size = Vector2i(1080, 400)
+render_target_update_mode = 0
+
+[node name="LevelMapView" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/LevelMapViewport/SubViewport" unique_id=1110331614 instance=ExtResource("2_g4x05")]
+position = Vector2(647, 313)
 
 [node name="Footer" type="HBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer" unique_id=238663402]
 layout_mode = 2

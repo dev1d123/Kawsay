@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://chdla8tlbtrf5"]
+
+[ext_resource type="Script" uid="uid://4b747sd6i073" path="res://Scripts/Map Menu/Level_Marker.gd" id="1_j1ns7"]
+[ext_resource type="Texture2D" uid="uid://dtlnj16kfkr0w" path="res://Sprites/Icons/circle.png" id="2_3yew0"]
+[ext_resource type="FontFile" uid="uid://bp5xw28twf38d" path="res://Font/MoonlitFlow-Regular.ttf" id="2_nlqo5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b1lj4"]
+radius = 95.047356
+
+[sub_resource type="LabelSettings" id="LabelSettings_njqwk"]
+font = ExtResource("2_nlqo5")
+font_size = 100
+font_color = Color(0, 0, 0, 1)
+outline_size = 4
+
+[node name="LevelMarker" type="Area2D" unique_id=299246685]
+priority = 300
+script = ExtResource("1_j1ns7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=593238876]
+shape = SubResource("CircleShape2D_b1lj4")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2120980592]
+scale = Vector2(0.71, 0.71)
+texture = ExtResource("2_3yew0")
+
+[node name="Label" type="Label" parent="." unique_id=2143040379]
+offset_left = -65.0
+offset_top = -56.0
+offset_right = 51.0
+offset_bottom = 48.0
+text = "1"
+label_settings = SubResource("LabelSettings_njqwk")
+horizontal_alignment = 1
+vertical_alignment = 1

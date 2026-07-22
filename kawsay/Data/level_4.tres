@@ -1,11 +1,17 @@
 [gd_resource type="Resource" script_class="LevelConfig" format=3 uid="uid://85b5ahq4o3u7"]
 
 [ext_resource type="Script" uid="uid://cnj7lywfb6vtt" path="res://Scripts/Level/LevelConfig.gd" id="1_eb8a2"]
+[ext_resource type="Script" uid="uid://unnkle6ixhu" path="res://Scripts/Level/WinCondition.gd" id="2_gwbah"]
+
+[sub_resource type="Resource" id="Resource_t11tp"]
+script = ExtResource("2_gwbah")
+metadata/_custom_type_script = "uid://unnkle6ixhu"
 
 [resource]
 script = ExtResource("1_eb8a2")
 level_name = "Tiabaya – Pozos de Agua Viva"
 generation_mode = 2
+win_conditions = Array[ExtResource("2_gwbah")]([SubResource("Resource_t11tp")])
 ai_difficulty = 1
 width = 8
 height = 7

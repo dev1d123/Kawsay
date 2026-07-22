@@ -1,0 +1,599 @@
+[gd_scene format=3 uid="uid://qmo2maovyiuu"]
+
+[ext_resource type="Script" uid="uid://b7grfhpe6dwr1" path="res://Scripts/MainMenu.gd" id="1_mainmenu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.0823529, 0.0941176, 0.141176, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.129412, 0.152941, 0.223529, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 0.5)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_help_normal"]
+bg_color = Color(0.180392, 0.207843, 0.309804, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 0.6)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.243137, 0.278431, 0.427451, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.960784, 0.745098, 0.278431, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.960784, 0.745098, 0.278431, 0.3)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_play_normal"]
+bg_color = Color(0.141176, 0.45098, 0.360784, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.301961, 0.784314, 0.611765, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_play_hover"]
+bg_color = Color(0.180392, 0.580392, 0.462745, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.407843, 0.952941, 0.752941, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.301961, 0.784314, 0.611765, 0.4)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.180392, 0.207843, 0.309804, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.290196, 0.329412, 0.490196, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_hover"]
+bg_color = Color(0.501961, 0.160784, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.901961, 0.301961, 0.34902, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0.901961, 0.301961, 0.34902, 0.3)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_log_banner"]
+bg_color = Color(0.0901961, 0.278431, 0.219608, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.8, 0.5, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 12
+
+[node name="MainMenu" type="Control" unique_id=1716871584]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mainmenu")
+
+[node name="Background" type="Panel" parent="." unique_id=927645158]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="DecorativePattern" type="Control" parent="." unique_id=1344663810]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HexBgCard1" type="Panel" parent="DecorativePattern" unique_id=154371891]
+modulate = Color(1, 1, 1, 0.04)
+layout_mode = 1
+offset_left = -80.0
+offset_top = -60.0
+offset_right = 320.0
+offset_bottom = 340.0
+rotation = 0.261799
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="HexBgCard2" type="Panel" parent="DecorativePattern" unique_id=729423880]
+modulate = Color(1, 1, 1, 0.04)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -280.0
+offset_right = 100.0
+offset_bottom = 120.0
+grow_horizontal = 0
+grow_vertical = 0
+rotation = -0.349066
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="HelpButton" type="Button" parent="." unique_id=1471167665]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 72.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_help_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "❓"
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2146148085]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1619065965]
+layout_mode = 2
+theme_override_constants/separation = 32
+alignment = 1
+
+[node name="Header" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=807792903]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header" unique_id=1977276735]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 68
+text = "KAWSAY"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="MarginContainer/VBoxContainer/Header" unique_id=258570261]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.541176, 0.572549, 0.698039, 1)
+theme_override_font_sizes/font_size = 22
+text = "🎲 JUEGO DE MESA 🎲"
+horizontal_alignment = 1
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=610298982]
+custom_minimum_size = Vector2(340, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1409062760]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_play_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_play_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_play_hover")
+text = "▶  JUGAR"
+
+[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1676666488]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "⚙️  CONFIGURACIÓN"
+
+[node name="CreditsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1469083474]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "📜  CRÉDITOS"
+
+[node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1018400526]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.9, 0.92, 0.96, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_quit_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
+text = "🚪  SALIR"
+
+[node name="LevelSelectOverlay" type="Control" parent="." unique_id=981398740]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OverlayBg" type="Panel" parent="LevelSelectOverlay" unique_id=845315276]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="LevelSelectOverlay" unique_id=2004486825]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 35
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 35
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer" unique_id=1070163233]
+layout_mode = 2
+theme_override_constants/separation = 22
+alignment = 1
+
+[node name="Header" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer" unique_id=1769811569]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Title" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Header" unique_id=304063786]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 46
+text = "SELECCIÓN DE NIVEL"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Header" unique_id=313462881]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.541176, 0.572549, 0.698039, 1)
+theme_override_font_sizes/font_size = 18
+text = "Elige un volcán para comenzar tu aventura"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer" unique_id=994704490]
+custom_minimum_size = Vector2(580, 360)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="LevelsContainer" type="VBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/ScrollContainer" unique_id=1598672948]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="Footer" type="HBoxContainer" parent="LevelSelectOverlay/MarginContainer/VBoxContainer" unique_id=238663402]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BackButton" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Footer" unique_id=1800487442]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "⬅  VOLVER"
+
+[node name="TestUnlockButton" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Footer" unique_id=2025641836]
+custom_minimum_size = Vector2(230, 48)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "⚡ SIMULAR DESBLOQUEO"
+
+[node name="SettingsOverlay" type="PanelContainer" parent="." unique_id=818617907]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -210.0
+offset_right = 270.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsOverlay" unique_id=961323244]
+layout_mode = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsOverlay/MarginContainer" unique_id=1048061818]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=487760053]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 32
+text = "⚙️ CONFIGURACIÓN"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=492293588]
+layout_mode = 2
+
+[node name="MusicBox" type="VBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=112042899]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox" unique_id=850036914]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox" unique_id=1571257684]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🎵 Volumen de Música"
+
+[node name="MusicValLabel" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox" unique_id=79680704]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="MusicSlider" type="HSlider" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox" unique_id=288754083]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="SfxBox" type="VBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=1732114669]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox" unique_id=1595884494]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox" unique_id=1942607577]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "🔊 Efectos de Sonido (SFX)"
+
+[node name="SfxValLabel" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox" unique_id=1111152578]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 18
+text = "80%"
+
+[node name="SfxSlider" type="HSlider" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox" unique_id=1505896688]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.8
+
+[node name="Spacer" type="Control" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=1000508004]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=1798243889]
+custom_minimum_size = Vector2(160, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "⬅  VOLVER"
+
+[node name="CreditsOverlay" type="PanelContainer" parent="." unique_id=1594764133]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -220.0
+offset_right = 260.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="MarginContainer" type="MarginContainer" parent="CreditsOverlay" unique_id=55987602]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CreditsOverlay/MarginContainer" unique_id=1735403869]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="CreditsOverlay/MarginContainer/VBoxContainer" unique_id=659224108]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
+theme_override_font_sizes/font_size = 32
+text = "CRÉDITOS"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CreditsOverlay/MarginContainer/VBoxContainer" unique_id=184391626]
+layout_mode = 2
+
+[node name="Dev1" type="VBoxContainer" parent="CreditsOverlay/MarginContainer/VBoxContainer" unique_id=920302721]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Name" type="Label" parent="CreditsOverlay/MarginContainer/VBoxContainer/Dev1" unique_id=851755190]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "David"
+horizontal_alignment = 1
+
+[node name="Role" type="Label" parent="CreditsOverlay/MarginContainer/VBoxContainer/Dev1" unique_id=440602061]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.647059, 0.705882, 0.988235, 1)
+theme_override_font_sizes/font_size = 18
+text = "Programación, Compositor"
+horizontal_alignment = 1
+
+[node name="Dev2" type="VBoxContainer" parent="CreditsOverlay/MarginContainer/VBoxContainer" unique_id=842275633]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Name" type="Label" parent="CreditsOverlay/MarginContainer/VBoxContainer/Dev2" unique_id=944346889]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Dani"
+horizontal_alignment = 1
+
+[node name="Role" type="Label" parent="CreditsOverlay/MarginContainer/VBoxContainer/Dev2" unique_id=1824225444]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.647059, 0.705882, 0.988235, 1)
+theme_override_font_sizes/font_size = 18
+text = "Programación, Diseñador"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CreditsOverlay/MarginContainer/VBoxContainer" unique_id=1931069397]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="CreditsOverlay/MarginContainer/VBoxContainer" unique_id=1604922494]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "⬅  VOLVER"
+
+[node name="LogBanner" type="PanelContainer" parent="." unique_id=2094507564]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 30.0
+offset_right = 160.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_log_banner")
+
+[node name="MarginContainer" type="MarginContainer" parent="LogBanner" unique_id=678359716]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 8
+
+[node name="LogLabel" type="Label" parent="LogBanner/MarginContainer" unique_id=151294832]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.290196, 0.941176, 0.611765, 1)
+theme_override_font_sizes/font_size = 20
+text = "Empezando Juego"
+horizontal_alignment = 1
+vertical_alignment = 1

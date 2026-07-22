@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://cedk64vudkflv"]
+
+[ext_resource type="Script" uid="uid://vlo87krbqbu2" path="res://Scripts/Map Menu/Tooltip_Display.gd" id="1_fcwbw"]
+
+[node name="TooltipDisplay" type="CanvasLayer" unique_id=1434802037]
+script = ExtResource("1_fcwbw")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=178885142]
+physics_interpolation_mode = 1
+custom_minimum_size = Vector2(100, 50)
+anchors_preset = -1
+anchor_left = 0.047000002
+anchor_top = 0.105000004
+anchor_right = 0.224
+anchor_bottom = 0.18200001
+offset_left = -0.144001
+offset_top = -0.040000916
+offset_right = -0.04800415
+offset_bottom = 0.06399536
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 8.0
+focus_mode = 1
+accessibility_region = true
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel" unique_id=1565712502]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MarginContainer" unique_id=1209577828]
+layout_mode = 2

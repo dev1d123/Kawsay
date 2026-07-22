@@ -19,7 +19,74 @@ func reset() -> void:
 
 func is_valid_empty_cell(coord: Vector2i) -> bool:
 	return _valid_coords.has(coord) and not _cells.has(coord)
+	
+func _get_all_lines(player_id: int) -> Array[int]:
+	var axes: Array = [[0, 3], [1, 4], [2, 5]]  # índices de HEX_DIRECTIONS
+	var visited_starts: Dictionary = {}  # evita contar la misma línea 2 veces
+	var lengths: Array[int] = []
 
+	for coord in _cells.keys():
+		if get_piece_at(coord) != player_id:
+			continue
+		for axis_index in axes.size():
+			var axis = axes[axis_index]
+			var back_dir: int = axis[1]
+
+			# Solo empieza a contar desde el "inicio" de la línea (si el vecino de atrás
+			# no es del mismo jugador, esta celda es el extremo inicial de la corrida).
+			var neighbors_back: Array = _neighbor_map.get(coord, [])
+			if not neighbors_back.is_empty():
+				var behind: Vector2i = neighbors_back[back_dir]
+				if behind != INVALID and get_piece_at(behind) == player_id:
+					continue  # no es el inicio, se contará desde el extremo real
+
+			var key: String = str(coord) + "_" + str(axis_index)
+			if visited_starts.has(key):
+				continue
+			visited_starts[key] = true
+
+			var count := 1
+			var current: Vector2i = coord
+			var forward_dir: int = axis[0]
+			while true:
+				var neighbors: Array = _neighbor_map.get(current, [])
+				if neighbors.is_empty():
+					break
+				var next: Vector2i = neighbors[forward_dir]
+				if next == INVALID or get_piece_at(next) != player_id:
+					break
+				count += 1
+				current = next
+
+			lengths.append(count)
+
+	return lengths
+
+## Revisa si player_id ya cumplió TODAS las condiciones de victoria del nivel.
+func check_win_conditions(player_id: int, conditions: Array[WinCondition]) -> bool:
+	if conditions.is_empty():
+		return false
+
+	var lines: Array[int] = _get_all_lines(player_id)
+	lines.sort()
+	lines.reverse()  # de mayor a menor, para asignar las líneas más largas primero
+
+	# Copia de conteos requeridos, para ir descontando según asignamos líneas.
+	var remaining: Array[int] = []
+	for wc in conditions:
+		remaining.append(wc.required_count)
+
+	# Asigna cada línea encontrada a la condición más exigente que aún necesite cumplirse.
+	for line_length in lines:
+		for i in conditions.size():
+			if remaining[i] > 0 and line_length >= conditions[i].required_length:
+				remaining[i] -= 1
+				break  # esta línea ya se usó, pasa a la siguiente
+
+	for r in remaining:
+		if r > 0:
+			return false
+	return true
 func can_place_at(coord: Vector2i) -> bool:
 	if not is_valid_empty_cell(coord):
 		return false

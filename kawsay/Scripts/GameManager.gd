@@ -9,9 +9,11 @@ signal invalid_move(coord: Vector2i)
 var board: BoardBase
 var current_player: int = 1
 var game_over: bool = false
+var win_conditions: Array[WinCondition]
 
-func _init(new_board: BoardBase) -> void:
+func _init(new_board: BoardBase, conditions: Array[WinCondition]) -> void:
 	board = new_board
+	win_conditions = conditions
 
 func play_at(coord: Vector2i) -> bool:
 	if game_over:
@@ -23,20 +25,15 @@ func play_at(coord: Vector2i) -> bool:
 	board.place_piece(coord, current_player)
 	piece_placed.emit(coord, current_player)
 
-	if board.check_winner_at(coord, current_player):
+	if board.check_win_conditions(current_player, win_conditions):  # <-- cambia
 		game_over = true
 		game_won.emit(current_player)
-		return true
-
-	if not board.has_valid_moves():
-		game_over = true
-		game_won.emit(0) # 0 indica empate (draw)
 		return true
 
 	current_player = 2 if current_player == 1 else 1
 	turn_changed.emit(current_player)
 	return true
-
+	
 func reset() -> void:
 	board.reset()
 	current_player = 1
