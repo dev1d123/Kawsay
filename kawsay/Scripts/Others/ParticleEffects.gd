@@ -2,19 +2,20 @@ class_name ParticleEffects
 
 ## Partículas al recoger un powerup del mapa
 static func spawn_powerup_pickup_particles(parent: Node, screen_pos: Vector2) -> void:
+	if not is_instance_valid(parent) or not parent.is_inside_tree():
+		return
+		
 	var particles := CPUParticles2D.new()
-	particles.global_position = screen_pos
-	particles.emitting = false
+	particles.amount = 35
+	particles.lifetime = 0.75
 	particles.one_shot = true
-	particles.amount = 45
-	particles.lifetime = 0.85
 	particles.explosiveness = 0.95
 	particles.spread = 180.0
 	particles.gravity = Vector2(0, 140)
-	particles.initial_velocity_min = 140.0
-	particles.initial_velocity_max = 260.0
-	particles.scale_amount_min = 5.0
-	particles.scale_amount_max = 10.0
+	particles.initial_velocity_min = 120.0
+	particles.initial_velocity_max = 220.0
+	particles.scale_amount_min = 4.0
+	particles.scale_amount_max = 8.0
 	
 	var gradient := Gradient.new()
 	gradient.set_color(0, Color(1.0, 0.9, 0.3, 1.0))
@@ -24,9 +25,16 @@ static func spawn_powerup_pickup_particles(parent: Node, screen_pos: Vector2) ->
 	
 	particles.z_index = 25
 	parent.add_child(particles)
+	particles.global_position = screen_pos
 	particles.emitting = true
 	
-	parent.get_tree().create_timer(1.2).timeout.connect(particles.queue_free)
+	var tree = parent.get_tree()
+	if tree:
+		var timer = tree.create_timer(1.0)
+		timer.timeout.connect(func():
+			if is_instance_valid(particles):
+				particles.queue_free()
+		)
 
 ## Partículas de bola de fuego parabólica y su posterior explosión
 static func launch_fireball(parent: Node, start_world: Vector2, target_world: Vector2) -> void:

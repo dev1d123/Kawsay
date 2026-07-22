@@ -446,8 +446,8 @@ func _distribute_powerups() -> void:
 		tile_map_layer.add_child(star)
 		_powerup_sprites[coord] = star
 		
-		# Crear Tween infinito para la respiración y brillo leve de la estrella
-		var tween = create_tween().set_loops().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		# Crear Tween infinito para la respiración y brillo leve de la estrella (vinculado al nodo)
+		var tween = star.create_tween().bind_node(star).set_loops().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		tween.tween_property(star, "scale", Vector2(base_scale * 1.25, base_scale * 1.25), 0.9)
 		tween.parallel().tween_property(star, "modulate", Color(1.4, 1.4, 1.0, 1.0), 0.9)
 		
@@ -1209,15 +1209,12 @@ func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 		_powerup_cells.erase(coord)
 		
 		var star_sprite = _powerup_sprites.get(coord, null)
-		var star_screen_pos := Vector2(640, 360)
+		var star_screen_pos: Vector2 = tile_map_layer.to_global(tile_map_layer.map_to_local(coord))
 		if is_instance_valid(star_sprite):
-			star_screen_pos = star_sprite.get_global_transform_with_canvas().origin
-			star_sprite.queue_free()
 			_powerup_sprites.erase(coord)
-		else:
-			star_screen_pos = tile_map_layer.map_to_local(coord)
+			star_sprite.queue_free()
 			
-		# Crear efecto de partículas muy notorio en la posición
+		# Crear efecto de partículas de forma segura
 		ParticleEffects.spawn_powerup_pickup_particles(hud, star_screen_pos)
 		
 		# Si la ventana emergente estaba abierta sobre esta celda, cerrarla
