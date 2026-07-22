@@ -1,7 +1,7 @@
 # level_map_view.gd
 extends Node2D
 
-const LEVEL_MARKER_SCENE := preload("res://scene/menuprincipal/level_marker.tscn")
+const LEVEL_MARKER_SCENE := preload("res://Scene/MenuPrincipal/level_marker.tscn")
 
 @export var map_sprite: Sprite2D
 @export var camera: Camera2D  # tu camera_controller.gd ya hecho
