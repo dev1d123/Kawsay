@@ -183,6 +183,17 @@ func _ready() -> void:
 
 	# Ejecutar ruleta de cartas
 	_run_card_roulette()
+	
+	# Conectar sonidos de botones
+	_connect_click_sfx(self)
+	var tree := get_tree()
+
+	tree.node_added.connect(_on_node_added)
+
+	tree_exited.connect(func():
+		if tree.node_added.is_connected(_on_node_added):
+			tree.node_added.disconnect(_on_node_added)
+	)
 	print("[LOG BoardView] _ready() FINALIZADO EXITOSAMENTE. Nivel listo para jugar!")
 
 func _apply_custom_fonts(node: Node) -> void:
@@ -642,6 +653,9 @@ func _use_sobrepoblacion_clicked(index: int) -> void:
 	print("🎉 Sobrepoblación activada en celdas: ", cell1, " y ", cell2)
 	_animation_playing = true
 	
+	if get_node_or_null("/root/AudioManager"):
+		get_node("/root/AudioManager").play_sfx("cheers")
+	
 	var cell1_pos = tile_map_layer.map_to_local(cell1)
 	var cell2_pos = tile_map_layer.map_to_local(cell2)
 	
@@ -701,15 +715,28 @@ func _execute_ai_powerup(type: String) -> bool:
 			return false
 			
 		var target = targets.pick_random()
+		
+		# Obtener celdas pertenecientes al volcán/IA para que la bola de fuego salga de ahí
+		var volcano_cells = []
+		for coord in _board_coords:
+			if game.board.get_piece_at(coord) == AI_PLAYER_ID:
+				volcano_cells.append(coord)
 		var start_cell = _board_coords.pick_random()
-		while start_cell == target:
-			start_cell = _board_coords.pick_random()
+		if not volcano_cells.is_empty():
+			start_cell = volcano_cells.pick_random()
+		else:
+			while start_cell == target:
+				start_cell = _board_coords.pick_random()
 			
 		var start_pos = tile_map_layer.map_to_local(start_cell)
 		var target_pos = tile_map_layer.map_to_local(target)
 		
 		print("🤖 IA usa ASENTAMIENTO: Lanzando bola de fuego sobre celda ", target)
 		_animation_playing = true
+		
+		if get_node_or_null("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("eruption")
+			
 		ParticleEffects.launch_fireball(tile_map_layer, start_pos, target_pos)
 		
 		get_tree().create_timer(1.0).timeout.connect(func():
@@ -735,6 +762,10 @@ func _execute_ai_powerup(type: String) -> bool:
 		
 		print("🤖 IA usa RESTAURACIÓN: Generando columna de fuego en celda de jugador ", target)
 		_animation_playing = true
+		
+		if get_node_or_null("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("magma")
+			
 		ParticleEffects.play_fire_effect(tile_map_layer, target_pos)
 		
 		get_tree().create_timer(2.0).timeout.connect(func():
@@ -760,6 +791,10 @@ func _execute_ai_powerup(type: String) -> bool:
 		
 		print("🤖 IA usa BLOQUEO: Volviendo celda de lava ", target, " invulnerable")
 		_animation_playing = true
+		
+		if get_node_or_null("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("fire")
+			
 		ParticleEffects.play_magma_expansion_effect(tile_map_layer, target_pos)
 		
 		get_tree().create_timer(2.0).timeout.connect(func():
@@ -786,10 +821,22 @@ func _execute_ai_powerup(type: String) -> bool:
 		print("🤖 IA usa SOBREPOBLACIÓN: Lanzando 3 bolas de fuego a celdas de jugador: ", chosen_targets)
 		_animation_playing = true
 		
+		if get_node_or_null("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("eruption")
+		
+		# Obtener celdas pertenecientes al volcán/IA para que las bolas de fuego salgan de ahí
+		var volcano_cells = []
+		for coord in _board_coords:
+			if game.board.get_piece_at(coord) == AI_PLAYER_ID:
+				volcano_cells.append(coord)
+				
 		for target in chosen_targets:
 			var start_cell = _board_coords.pick_random()
-			while start_cell == target:
-				start_cell = _board_coords.pick_random()
+			if not volcano_cells.is_empty():
+				start_cell = volcano_cells.pick_random()
+			else:
+				while start_cell == target:
+					start_cell = _board_coords.pick_random()
 			var start_pos = tile_map_layer.map_to_local(start_cell)
 			var target_pos = tile_map_layer.map_to_local(target)
 			ParticleEffects.launch_fireball(tile_map_layer, start_pos, target_pos)
@@ -1186,6 +1233,10 @@ func _on_piece_placed(coord: Vector2i, player_id: int) -> void:
 		else:
 			_collect_ai_powerup(powerup_type)
 			
+	# Reproducir sonido de colocar pieza si es el turno del jugador humano
+	if player_id == HUMAN_PLAYER_ID:
+		if get_node_or_null("/root/AudioManager"):
+			get_node("/root/AudioManager").play_sfx("player_normal") 
 	var atlas_coord: Vector2i = _get_random_player1_coord() if player_id == AI_PLAYER_ID else _get_random_player2_coord()
 	tile_map_layer.set_cell(coord, SOURCE_ID, atlas_coord)
 
@@ -1212,6 +1263,8 @@ func _maybe_trigger_ai_turn() -> void:
 			return # El uso del poder consumió el turno, salir de inmediato!
 			
 	var move: Vector2i = ai.choose_move(_board_coords)
+	if get_node_or_null("/root/AudioManager"):
+		get_node("/root/AudioManager").play_sfx("lava_normal")
 	game.play_at(move)
 
 func _center_board(coords: Array[Vector2i]) -> void:
@@ -1734,3 +1787,21 @@ func _on_card_mouse_exited() -> void:
 		hover_tween.tween_property(panel, "global_position:y", panel.global_position.y + 10.0, 0.2)
 		hover_tween.tween_property(panel, "modulate:a", 0.0, 0.2)
 		hover_tween.chain().tween_callback(panel.queue_free)
+
+func _on_node_added(node: Node) -> void:
+	if node is Button:
+		_connect_button(node)
+
+func _connect_click_sfx(node: Node) -> void:
+	if node is Button:
+		_connect_button(node)
+	for child in node.get_children():
+		_connect_click_sfx(child)
+
+func _connect_button(btn: Button) -> void:
+	if not btn.pressed.is_connected(_play_button_click):
+		btn.pressed.connect(_play_button_click)
+
+func _play_button_click() -> void:
+	if get_node_or_null("/root/AudioManager"):
+		get_node("/root/AudioManager").play_sfx("button_click")

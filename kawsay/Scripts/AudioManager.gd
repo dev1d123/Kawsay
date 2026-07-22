@@ -124,6 +124,35 @@ func _apply_music_volume() -> void:
 	if bus_idx != -1:
 		AudioServer.set_bus_volume_db(bus_idx, linear_to_db(music_volume))
 
+const SFX = {
+	"button_click": "res://Sound/SFX/button_click.mp3",
+	"cheers": "res://Sound/SFX/cheers.mp3",
+	"eruption": "res://Sound/SFX/eruption.mp3",
+	"explosion": "res://Sound/SFX/explosion.mp3",
+	"fire": "res://Sound/SFX/fire.mp3",
+	"hammer": "res://Sound/SFX/hammer.mp3",
+	"lava_normal": "res://Sound/SFX/lava_normal.mp3",
+	"magma": "res://Sound/SFX/magma.mp3",
+	"player_normal": "res://Sound/SFX/player_normal.mp3",
+	"rain": "res://Sound/SFX/rain.mp3"
+}
+
+func play_sfx(sfx_name: String) -> void:
+	if not SFX.has(sfx_name):
+		push_error("SFX no encontrado en AudioManager: " + sfx_name)
+		return
+		
+	var path = SFX[sfx_name]
+	var stream = load(path)
+	if stream:
+		var sfx_player = AudioStreamPlayer.new()
+		sfx_player.stream = stream
+		sfx_player.bus = "SFX"
+		sfx_player.process_mode = Node.PROCESS_MODE_ALWAYS
+		add_child(sfx_player)
+		sfx_player.play()
+		sfx_player.finished.connect(sfx_player.queue_free)
+
 func _apply_sfx_volume() -> void:
 	var bus_idx = AudioServer.get_bus_index("SFX")
 	if bus_idx != -1:

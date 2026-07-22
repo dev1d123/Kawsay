@@ -39,6 +39,17 @@ func _ready() -> void:
 	if get_node_or_null("/root/AudioManager"):
 		get_node("/root/AudioManager").play_music("menu")
 
+	# Conectar sonidos de botones
+	_connect_click_sfx(self)
+	var tree := get_tree()
+
+	tree.node_added.connect(_on_node_added)
+
+	tree_exited.connect(func():
+		if tree.node_added.is_connected(_on_node_added):
+			tree.node_added.disconnect(_on_node_added)
+	)
+
 	# Configuración inicial de vistas secundarias
 	credits_panel.visible = false
 	credits_panel.modulate.a = 0.0
@@ -484,3 +495,21 @@ func _on_quit_pressed() -> void:
 	var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	tween.tween_property(self, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(func(): get_tree().quit())
+
+func _on_node_added(node: Node) -> void:
+	if node is Button:
+		_connect_button(node)
+
+func _connect_click_sfx(node: Node) -> void:
+	if node is Button:
+		_connect_button(node)
+	for child in node.get_children():
+		_connect_click_sfx(child)
+
+func _connect_button(btn: Button) -> void:
+	if not btn.pressed.is_connected(_play_button_click):
+		btn.pressed.connect(_play_button_click)
+
+func _play_button_click() -> void:
+	if get_node_or_null("/root/AudioManager"):
+		get_node("/root/AudioManager").play_sfx("button_click")

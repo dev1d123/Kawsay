@@ -203,9 +203,9 @@ static func spawn_fireball_explosion_particles(parent: Node, world_pos: Vector2)
 	embers.emitting = true
 	smoke.emitting = true
 	
-	# Sonido de explosión comentado por el momento
-	# if parent.get_node_or_null("/root/AudioManager"):
-	# 	parent.get_node("/root/AudioManager").play_sfx("explosion")
+	# Sonido de explosión
+	if parent.get_node_or_null("/root/AudioManager"):
+		parent.get_node("/root/AudioManager").play_sfx("explosion")
 		
 	parent.get_tree().create_timer(1.6).timeout.connect(container.queue_free)
 
@@ -296,9 +296,9 @@ static func _spawn_hammer_impact_particles(parent: Node, local_offset: Vector2) 
 	parent.add_child(dust)
 	dust.emitting = true
 	
-	# Sonido de martillazo comentado por el momento
-	# if parent.get_node_or_null("/root/AudioManager"):
-	# 	parent.get_node("/root/AudioManager").play_sfx("hammer_hit")
+	# Sonido de martillazo
+	if parent.get_node_or_null("/root/AudioManager"):
+		parent.get_node("/root/AudioManager").play_sfx("hammer")
 		
 	parent.get_tree().create_timer(0.65).timeout.connect(sparks.queue_free)
 	parent.get_tree().create_timer(0.65).timeout.connect(dust.queue_free)
@@ -375,9 +375,9 @@ static func play_rain_effect(parent: Node, cell_local_pos: Vector2) -> void:
 	rain_drops.emitting = true
 	splashes.emitting = true
 	
-	# Sonido de lluvia comentado por el momento
-	# if parent.get_node_or_null("/root/AudioManager"):
-	# 	parent.get_node("/root/AudioManager").play_sfx("rain")
+	# Sonido de lluvia
+	if parent.get_node_or_null("/root/AudioManager"):
+		parent.get_node("/root/AudioManager").play_sfx("rain")
 		
 	parent.get_tree().create_timer(3.0).timeout.connect(func():
 		if is_instance_valid(cloud): cloud.emitting = false
