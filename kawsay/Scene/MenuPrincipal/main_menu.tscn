@@ -1,7 +1,47 @@
-[gd_scene format=3 uid="uid://c6j8mak7m5p1n"]
+[gd_scene format=4 uid="uid://c6j8mak7m5p1n"]
 
 [ext_resource type="Script" uid="uid://b7grfhpe6dwr1" path="res://Scripts/MainMenu.gd" id="1_mainmenu"]
 [ext_resource type="PackedScene" uid="uid://dnbh5yk2tu67l" path="res://Scene/MenuPrincipal/LevelMapView.tscn" id="2_g4x05"]
+[ext_resource type="Texture2D" uid="uid://bdssp7w8vaqey" path="res://Sprites/Prueba/TilesMap.png" id="2_s36rf"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sj742"]
+texture = ExtResource("2_s36rf")
+texture_region_size = Vector2i(122, 142)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_65uc1"]
+tile_shape = 3
+tile_size = Vector2i(122, 142)
+sources/0 = SubResource("TileSetAtlasSource_sj742")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0, 0, 0, 1)
@@ -123,7 +163,13 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mainmenu")
 
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=281814893]
+position = Vector2(-180, 172)
+tile_map_data = PackedByteArray("AAAKAAAAAAAEAAIAAAAJAP//AAAEAAMAAAAKAP//AAADAAAAAAAJAAAAAAADAAAAAAAIAP//AAADAAAAAAAJAP7/AAADAAAAAAALAP7/AAADAAQAAAAKAP7/AAADAAAAAAAIAAEAAAADAAQAAAAJAAEAAAADAAQAAAALAAAAAAADAAQAAAAKAAEAAAADAAQAAAALAP//AAADAAQAAAAKAP3/AAADAAQAAAAJAP3/AAADAAQAAAAIAP3/AAADAAQAAAAIAP7/AAADAAQAAAAHAP//AAADAAQAAAAIAAAAAAADAAQAAAAJAAIAAAADAAEAAAAKAAIAAAAEAAEAAAAHAAAAAAAEAAEAAAALAAEAAAAEAAAAAAAHAAEAAAAEAAUAAAAIAAIAAAAEAAQAAAALAAIAAAADAAMAAAAKAAMAAAADAAMAAAAHAAMAAAADAAMAAAAGAAEAAAADAAMAAAAHAAIAAAADAAMAAAAFAAAAAAACAAMAAAADAAAAAAABAAEAAAACAAAAAAAAAAAAAAABAP//AAAAAAEAAAACAP//AAAAAAAAAAACAP7/AAAAAAEAAAADAP7/AAAAAAEAAAADAP//AAABAAAAAAAEAP7/AAABAAIAAAAEAAEAAAACAAMAAAAFAAIAAAACAAMAAAAEAAMAAAACAAAAAAADAAMAAAACAAAAAAACAAMAAAACAAAAAAAFAAQAAAACAAAAAAAEAAQAAAACAAAAAAADAAQAAAACAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAADAAIAAAAAAAAAAAACAAIAAAAAAAAAAAABAAEAAAAAAAEAAAABAAAAAAAAAAEAAAAEAAAAAAABAAAAAAAEAP//AAACAAMAAAABAAIAAAABAAAAAAABAAMAAAABAAAAAAAFAP7/AAACAAMAAAAGAP//AAADAAAAAAAHAP7/AAADAAMAAAAFAP//AAADAAAAAAAGAAAAAAADAAIAAAAGAP7/AAADAAIAAAAHAP3/AAADAAMAAAAGAP3/AAADAAMAAAAGAAMAAAADAAMAAAAFAAMAAAACAAMAAAAFAAEAAAACAAMAAAAEAAIAAAACAAMAAAAEAP3/AAACAAMAAAA=")
+tile_set = SubResource("TileSet_65uc1")
+
 [node name="Background" type="Panel" parent="." unique_id=927645158]
+modulate = Color(0.5137255, 0.5137255, 0.5137255, 0.07058824)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -168,6 +214,7 @@ rotation = -0.349066
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 
 [node name="HelpButton" type="Button" parent="." unique_id=1471167665]
+visible = false
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 1
 anchors_preset = 1
