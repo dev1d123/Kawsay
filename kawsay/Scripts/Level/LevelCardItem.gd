@@ -90,11 +90,7 @@ func setup_card(level_num: int, level_name: String, is_unlocked: bool) -> void:
 			solid_bg.color = Color(0.18, 0.22, 0.32)
 		if sillar_rect:
 			sillar_rect.self_modulate = Color(0.90, 0.92, 0.96)
-		var icon_str = "⛰️"
-		if level_num > 10:
-			icon_str = "🔥"
-		elif level_num > 5:
-			icon_str = "🌋"
+		var icon_str = ""
 		icon_label.text = icon_str
 		name_label.add_theme_color_override("font_color", Color(0.12, 0.15, 0.24))
 		badge_label.text = "DESBLOQUEADO"
@@ -107,12 +103,21 @@ func setup_card(level_num: int, level_name: String, is_unlocked: bool) -> void:
 			solid_bg.color = Color(0.10, 0.11, 0.15)
 		if sillar_rect:
 			sillar_rect.self_modulate = Color(0.78, 0.80, 0.84)
-		icon_label.text = "🔒"
+		icon_label.text = ""
 		name_label.add_theme_color_override("font_color", Color(0.3, 0.32, 0.38))
 		badge_label.text = "BLOQUEADO"
 		badge_label.add_theme_color_override("font_color", Color(0.65, 0.25, 0.25))
-		sub_label.text = "🔒 Supera el Nivel %d" % (level_num - 1)
+		sub_label.text = "Supera el Nivel %d" % (level_num - 1)
 		sub_label.add_theme_color_override("font_color", Color(0.5, 0.3, 0.3))
+		
+	# Simular grosor/bold usando un outline del mismo color que el texto
+	for lbl in [name_label, sub_label, badge_label]:
+		if is_instance_valid(lbl):
+			var color = lbl.get_theme_color("font_color")
+			if lbl.has_theme_color_override("font_color"):
+				color = lbl.get_theme_color("font_color")
+			lbl.add_theme_color_override("font_outline_color", color)
+			lbl.add_theme_constant_override("outline_size", 2)
 
 func _ready() -> void:
 	pivot_offset = size / 2.0

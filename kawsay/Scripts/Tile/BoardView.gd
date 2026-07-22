@@ -219,7 +219,7 @@ func _setup_hud() -> void:
 	var name_str = level_config.level_name if level_config else "Volcan"
 
 	level_name_label.text = "%s (Nivel %d)" % [name_str, level_num]
-	objective_label.text = "🎯 Objetivo: " + _build_objective_text()
+	objective_label.text = "Objetivo: " + _build_objective_text()
 
 	# 2. Conexión de 4 Botones Top Right
 	selector_button.pressed.connect(_on_selector_pressed)
@@ -366,6 +366,7 @@ func _build_neighbor_map(coords: Array[Vector2i]) -> Dictionary:
 func _setup_game(coords: Array[Vector2i]) -> void:
 	var neighbor_map: Dictionary = _build_neighbor_map(coords)
 	var hex_board := HexBoard.new(coords, neighbor_map)  # ya no recibe win_length aquí
+	hex_board.win_length = level_config.get_max_required_length()
 	game = GameManager.new(hex_board, level_config.win_conditions)
 	ai = AIFactory.create(level_config.ai_difficulty, hex_board, AI_PLAYER_ID, HUMAN_PLAYER_ID, level_config.get_max_required_length())
 	
@@ -1016,16 +1017,13 @@ func _update_powerups_hud() -> void:
 		var new_slot := Panel.new()
 		new_slot.custom_minimum_size = Vector2(50, 48)
 		var slot_style := StyleBoxFlat.new()
-		slot_style.bg_color = Color(0.1, 0.12, 0.18, 0.8)
+		slot_style.bg_color = Color(0.12, 0.12, 0.12, 0.8)
 		slot_style.border_width_left = 1
 		slot_style.border_width_top = 1
 		slot_style.border_width_right = 1
 		slot_style.border_width_bottom = 1
-		slot_style.border_color = Color(0.96, 0.75, 0.28, 0.6)
-		slot_style.corner_radius_top_left = 6
-		slot_style.corner_radius_top_right = 6
-		slot_style.corner_radius_bottom_right = 6
-		slot_style.corner_radius_bottom_left = 6
+		slot_style.border_color = Color(1, 1, 1, 0.6)
+
 		new_slot.add_theme_stylebox_override("panel", slot_style)
 		slots_hbox.add_child(new_slot)
 		current_slots.append(new_slot)
@@ -1102,16 +1100,13 @@ func _show_powerup_tooltip_at_pos(type: String, screen_pos: Vector2) -> void:
 	_powerup_popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.08, 0.12, 0.85)
+	style.bg_color = Color(0.08, 0.08, 0.08, 0.85)
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color(0.96, 0.75, 0.28, 0.9)
-	style.corner_radius_top_left = 10
-	style.corner_radius_top_right = 10
-	style.corner_radius_bottom_right = 10
-	style.corner_radius_bottom_left = 10
+	style.border_color = Color(1, 1, 1, 0.9)
+
 	style.shadow_color = Color(0, 0, 0, 0.4)
 	style.shadow_size = 8
 	_powerup_popup.add_theme_stylebox_override("panel", style)
@@ -1333,7 +1328,7 @@ func _on_game_won(player_id: int) -> void:
 		if newly_unlocked:
 			var next_lvl = level_num + 1
 			unlock_info_label.visible = true
-			unlock_info_label.text = "🔓 ¡Felicidades! Se ha desbloqueado el Nivel %d" % next_lvl
+			unlock_info_label.text = "¡Felicidades! Se ha desbloqueado el Nivel %d" % next_lvl
 		else:
 			unlock_info_label.visible = false
 	elif player_id == AI_PLAYER_ID:
@@ -1480,7 +1475,7 @@ func _run_card_roulette() -> void:
 	
 	# Título de la ruleta
 	var title_label := Label.new()
-	title_label.text = "🔮 SELECCIONANDO CARTA DEL NIVEL... 🔮"
+	title_label.text = "SELECCIONANDO CARTA DEL NIVEL..."
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_label.add_theme_font_size_override("font_size", 24)
 	title_label.add_theme_color_override("font_color", Color(0.96, 0.75, 0.28))
@@ -1493,16 +1488,13 @@ func _run_card_roulette() -> void:
 	
 	# Estilo del marco del carrusel
 	var frame_style := StyleBoxFlat.new()
-	frame_style.bg_color = Color(0.08, 0.10, 0.16, 0.8)
+	frame_style.bg_color = Color(0.1, 0.1, 0.1, 0.8)
 	frame_style.border_width_left = 3
 	frame_style.border_width_top = 3
 	frame_style.border_width_right = 3
 	frame_style.border_width_bottom = 3
-	frame_style.border_color = Color(0.29, 0.35, 0.49, 0.8)
-	frame_style.corner_radius_top_left = 12
-	frame_style.corner_radius_top_right = 12
-	frame_style.corner_radius_bottom_right = 12
-	frame_style.corner_radius_bottom_left = 12
+	frame_style.border_color = Color(1, 1, 1, 0.8)
+
 	frame_style.shadow_color = Color(0, 0, 0, 0.5)
 	frame_style.shadow_size = 15
 	frame.add_theme_stylebox_override("panel", frame_style)
@@ -1545,16 +1537,13 @@ func _run_card_roulette() -> void:
 		card_panel.pivot_offset = Vector2(70, 100)
 		
 		var card_style := StyleBoxFlat.new()
-		card_style.bg_color = Color(0.12, 0.15, 0.22, 1.0)
-		card_style.corner_radius_top_left = 8
-		card_style.corner_radius_top_right = 8
-		card_style.corner_radius_bottom_right = 8
-		card_style.corner_radius_bottom_left = 8
+		card_style.bg_color = Color(0.15, 0.15, 0.15, 1.0)
+
 		card_style.border_width_left = 2
 		card_style.border_width_top = 2
 		card_style.border_width_right = 2
 		card_style.border_width_bottom = 2
-		card_style.border_color = Color(0.4, 0.45, 0.6, 0.4)
+		card_style.border_color = Color(1, 1, 1, 0.4)
 		card_panel.add_theme_stylebox_override("panel", card_style)
 		
 		var tex_rect := TextureRect.new()
@@ -1593,7 +1582,7 @@ func _run_card_roulette() -> void:
 		
 		# Cambiar el borde a dorado brillante
 		var final_style: StyleBoxFlat = final_card.get_theme_stylebox("panel").duplicate()
-		final_style.border_color = Color(0.96, 0.75, 0.28)
+		final_style.border_color = Color(1, 1, 1)
 		final_style.shadow_color = Color(0.96, 0.75, 0.28, 0.5)
 		final_style.shadow_size = 12
 		final_card.add_theme_stylebox_override("panel", final_style)
@@ -1604,16 +1593,13 @@ func _run_card_roulette() -> void:
 		desc_panel.modulate.a = 0.0
 		
 		var desc_style := StyleBoxFlat.new()
-		desc_style.bg_color = Color(0.1, 0.12, 0.18, 0.95)
+		desc_style.bg_color = Color(0.12, 0.12, 0.12, 0.95)
 		desc_style.border_width_left = 1
 		desc_style.border_width_top = 1
 		desc_style.border_width_right = 1
 		desc_style.border_width_bottom = 1
-		desc_style.border_color = Color(0.96, 0.75, 0.28, 0.5)
-		desc_style.corner_radius_top_left = 8
-		desc_style.corner_radius_top_right = 8
-		desc_style.corner_radius_bottom_right = 8
-		desc_style.corner_radius_bottom_left = 8
+		desc_style.border_color = Color(1, 1, 1, 0.5)
+
 		desc_panel.add_theme_stylebox_override("panel", desc_style)
 		
 		var desc_margin := MarginContainer.new()
@@ -1728,16 +1714,13 @@ func _on_card_mouse_entered() -> void:
 	_hover_info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.10, 0.16, 0.96)
+	style.bg_color = Color(0.1, 0.1, 0.1, 0.96)
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color(0.96, 0.75, 0.28, 0.8)
-	style.corner_radius_top_left = 10
-	style.corner_radius_top_right = 10
-	style.corner_radius_bottom_right = 10
-	style.corner_radius_bottom_left = 10
+	style.border_color = Color(1, 1, 1, 0.8)
+
 	style.shadow_color = Color(0, 0, 0, 0.4)
 	style.shadow_size = 8
 	_hover_info_panel.add_theme_stylebox_override("panel", style)

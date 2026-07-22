@@ -149,6 +149,23 @@ func _apply_custom_fonts(node: Node) -> void:
 		else:
 			node.add_theme_font_override("font", font_reg)
 			
+		# Simular grosor/bold usando un outline del mismo color que el texto
+		var text_color = Color(0.96, 0.75, 0.28) # Dorado base para la interfaz
+		if node is Button:
+			text_color = Color(0.12, 0.14, 0.20) # Color del texto del sillar
+		elif node is Label:
+			if node.has_theme_color_override("font_color"):
+				text_color = node.get_theme_color("font_color")
+		
+		# Ajustar el grosor según el tamaño de la fuente
+		var font_size = node.get_theme_font_size("font_size")
+		var outline = 2
+		if font_size > 20:
+			outline = 3
+			
+		node.add_theme_color_override("font_outline_color", text_color)
+		node.add_theme_constant_override("outline_size", outline)
+			
 	for child in node.get_children():
 		_apply_custom_fonts(child)
 
@@ -415,7 +432,7 @@ func _on_level_card_pressed(level_num: int) -> void:
 			print("[LOG MainMenu] Resultado de cambio directo: %d" % err)
 	else:
 		print("[LOG MainMenu] Nivel %d BLOQUEADO. Requiere superar nivel %d." % [level_num, level_num - 1])
-		_show_log_banner("🔒 Completa el Nivel %d primero" % (level_num - 1))
+		_show_log_banner("Completa el Nivel %d primero" % (level_num - 1))
 
 		if card:
 			card.play_locked_shake()
@@ -436,9 +453,9 @@ func _on_test_unlock_pressed() -> void:
 
 	var msg: String
 	if max_unlocked_level == 1:
-		msg = "⚡ Reiniciado: Solo Nivel 1 activo"
+		msg = "Reiniciado: Solo Nivel 1 activo"
 	else:
-		msg = "⚡ Nivel %d desbloqueado para pruebas" % max_unlocked_level
+		msg = "Nivel %d desbloqueado para pruebas" % max_unlocked_level
 
 	print(msg)
 	_show_log_banner(msg)

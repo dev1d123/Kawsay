@@ -19,7 +19,7 @@ func choose_move(valid_coords: Array[Vector2i]) -> Vector2i:
 	push_error("choose_move() no implementado")
 	return Vector2i.ZERO
 
-func _get_playable_cells(valid_coords: Array[Vector2i]) -> Array[Vector2i]:
+func _get_playable_cells(valid_coords: Array) -> Array[Vector2i]:
 	var playable: Array[Vector2i] = []
 	for c in valid_coords:
 		if board.can_place_at(c):

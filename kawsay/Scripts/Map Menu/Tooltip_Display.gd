@@ -12,7 +12,6 @@ func _ready() -> void:
 	style.bg_color = Color(0, 0, 0, 0.65)
 	style.border_color = Color(1, 1, 1, 0.25)
 	style.set_border_width_all(1)
-	style.set_corner_radius_all(6)
 	style.set_content_margin_all(10)
 	panel.add_theme_stylebox_override("panel", style)
 

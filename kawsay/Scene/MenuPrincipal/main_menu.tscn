@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dnbh5yk2tu67l" path="res://Scene/MenuPrincipal/LevelMapView.tscn" id="2_g4x05"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
-bg_color = Color(0.0823529, 0.0941176, 0.141176, 1)
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 bg_color = Color(0.129412, 0.152941, 0.223529, 0.95)
@@ -12,11 +12,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.960784, 0.745098, 0.278431, 0.5)
-corner_radius_top_left = 16
-corner_radius_top_right = 16
-corner_radius_bottom_right = 16
-corner_radius_bottom_left = 16
+border_color = Color(1, 1, 1, 0.5)
+
 shadow_color = Color(0, 0, 0, 0.45)
 shadow_size = 16
 
@@ -26,11 +23,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.960784, 0.745098, 0.278431, 0.6)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
+border_color = Color(1, 1, 1, 0.6)
+
 shadow_color = Color(0, 0, 0, 0.3)
 shadow_size = 6
 
@@ -40,11 +34,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.960784, 0.745098, 0.278431, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(1, 1, 1, 1)
+
 shadow_color = Color(0.960784, 0.745098, 0.278431, 0.3)
 shadow_size = 8
 
@@ -54,11 +45,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.301961, 0.784314, 0.611765, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(1, 1, 1, 1)
+
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_play_hover"]
 bg_color = Color(0.180392, 0.580392, 0.462745, 1)
@@ -66,11 +54,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.407843, 0.952941, 0.752941, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(1, 1, 1, 1)
+
 shadow_color = Color(0.301961, 0.784314, 0.611765, 0.4)
 shadow_size = 10
 
@@ -80,11 +65,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.290196, 0.329412, 0.490196, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(1, 1, 1, 1)
+
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_quit_hover"]
 bg_color = Color(0.501961, 0.160784, 0.2, 1)
@@ -92,11 +74,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.901961, 0.301961, 0.34902, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+border_color = Color(1, 1, 1, 1)
+
 shadow_color = Color(0.901961, 0.301961, 0.34902, 0.3)
 shadow_size = 8
 
@@ -106,11 +85,8 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.2, 0.8, 0.5, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+border_color = Color(1, 1, 1, 1)
+
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 12
 
@@ -184,7 +160,7 @@ theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxFlat_help_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "❓"
+text = "?"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=2146148085]
 layout_mode = 1
@@ -214,15 +190,15 @@ theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/font_size = 68
+theme_override_font_sizes/font_size = 110
 text = "KAWSAY"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="MarginContainer/VBoxContainer/Header" unique_id=258570261]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.541176, 0.572549, 0.698039, 1)
-theme_override_font_sizes/font_size = 22
-text = "🎲 JUEGO DE MESA 🎲"
+theme_override_font_sizes/font_size = 32
+text = "JUEGO DE MESA"
 horizontal_alignment = 1
 
 [node name="ButtonsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=610298982]
@@ -241,7 +217,7 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_play_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_play_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_play_hover")
-text = "▶  JUGAR"
+text = "JUGAR"
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1676666488]
 custom_minimum_size = Vector2(0, 52)
@@ -252,7 +228,7 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "⚙️  CONFIGURACIÓN"
+text = "CONFIGURACIÓN"
 
 [node name="CreditsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1469083474]
 custom_minimum_size = Vector2(0, 52)
@@ -263,7 +239,7 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "📜  CRÉDITOS"
+text = "CRÉDITOS"
 
 [node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsContainer" unique_id=1018400526]
 custom_minimum_size = Vector2(0, 52)
@@ -274,7 +250,7 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_quit_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_quit_hover")
-text = "🚪  SALIR"
+text = "SALIR"
 
 [node name="LevelSelectOverlay" type="Control" parent="." unique_id=981398740]
 visible = false
@@ -360,7 +336,7 @@ theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "⬅  VOLVER"
+text = "VOLVER"
 
 [node name="TestUnlockButton" type="Button" parent="LevelSelectOverlay/MarginContainer/VBoxContainer/Footer" unique_id=2025641836]
 custom_minimum_size = Vector2(230, 48)
@@ -371,7 +347,7 @@ theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "⚡ SIMULAR DESBLOQUEO"
+text = "SIMULAR DESBLOQUEO"
 
 [node name="SettingsOverlay" type="PanelContainer" parent="." unique_id=818617907]
 visible = false
@@ -405,7 +381,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.960784, 0.745098, 0.278431, 1)
 theme_override_font_sizes/font_size = 32
-text = "⚙️ CONFIGURACIÓN"
+text = "CONFIGURACIÓN"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="SettingsOverlay/MarginContainer/VBoxContainer" unique_id=492293588]
@@ -423,7 +399,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "🎵 Volumen de Música"
+text = "Volumen de Música"
 
 [node name="MusicValLabel" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/MusicBox/HeaderHBox" unique_id=79680704]
 layout_mode = 2
@@ -450,7 +426,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
-text = "🔊 Efectos de Sonido (SFX)"
+text = "Efectos de Sonido (SFX)"
 
 [node name="SfxValLabel" type="Label" parent="SettingsOverlay/MarginContainer/VBoxContainer/SfxBox/HeaderHBox" unique_id=1111152578]
 layout_mode = 2
@@ -479,7 +455,7 @@ theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "⬅  VOLVER"
+text = "VOLVER"
 
 [node name="CreditsOverlay" type="PanelContainer" parent="." unique_id=1594764133]
 visible = false
@@ -569,7 +545,7 @@ theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-text = "⬅  VOLVER"
+text = "VOLVER"
 
 [node name="LogBanner" type="PanelContainer" parent="." unique_id=2094507564]
 visible = false
