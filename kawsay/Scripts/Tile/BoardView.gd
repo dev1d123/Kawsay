@@ -222,7 +222,7 @@ func _setup_hud() -> void:
 	level_name_label.text = "%s (Nivel %d)" % [name_str, level_num]
 	objective_label.text = "Objetivo: " + _build_objective_text()
 
-	# 2. Conexión de 4 Botones Top Right
+	# 2. Conexión de Botones Top Right
 	selector_button.pressed.connect(_on_selector_pressed)
 	restart_button.pressed.connect(_on_restart_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
@@ -1100,8 +1100,7 @@ func _show_powerup_tooltip_at_pos(type: String, screen_pos: Vector2) -> void:
 	style.border_width_bottom = 2
 	style.border_color = Color(1, 1, 1, 0.9)
 
-	style.shadow_color = Color(0, 0, 0, 0.4)
-	style.shadow_size = 8
+
 	_powerup_popup.add_theme_stylebox_override("panel", style)
 	
 	var margin := MarginContainer.new()
@@ -1439,9 +1438,8 @@ func _init_bottom_card_layout() -> void:
 	slots_hbox.clip_contents = false
 	slot1.clip_contents = false
 	
-	# Hacer el slot transparente por defecto (sin borde ni fondo visual)
 	slot1.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-	slot1.custom_minimum_size = Vector2(64, 88)
+	slot1.custom_minimum_size = Vector2(96, 132)
 	
 	# Ocultar el Label original ("Carta I")
 	var orig_label = slot1.get_node_or_null("Label")
@@ -1455,7 +1453,7 @@ func _run_card_roulette() -> void:
 	_roulette_overlay = ColorRect.new()
 	_roulette_overlay.name = "RouletteOverlay"
 	_roulette_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_roulette_overlay.color = Color(0.04, 0.05, 0.08, 0.9)
+	_roulette_overlay.color = Color(0, 0, 0, 1)
 	_roulette_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	hud.add_child(_roulette_overlay)
 	
@@ -1490,8 +1488,7 @@ func _run_card_roulette() -> void:
 	frame_style.border_width_bottom = 3
 	frame_style.border_color = Color(1, 1, 1, 0.8)
 
-	frame_style.shadow_color = Color(0, 0, 0, 0.5)
-	frame_style.shadow_size = 15
+
 	frame.add_theme_stylebox_override("panel", frame_style)
 	vbox.add_child(frame)
 	
@@ -1578,8 +1575,7 @@ func _run_card_roulette() -> void:
 		# Cambiar el borde a dorado brillante
 		var final_style: StyleBoxFlat = final_card.get_theme_stylebox("panel").duplicate()
 		final_style.border_color = Color(1, 1, 1)
-		final_style.shadow_color = Color(0.96, 0.75, 0.28, 0.5)
-		final_style.shadow_size = 12
+
 		final_card.add_theme_stylebox_override("panel", final_style)
 		
 		# Mostrar la descripción de la carta en la ruleta
@@ -1681,10 +1677,10 @@ func _setup_bottom_card_ui() -> void:
 	tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	
-	# Posicionamiento elevado y centrado en Slot1 (tamaño 80x114)
+	# Posicionamiento elevado y centrado en Slot1 (tamaño 120x171)
 	tex_rect.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	tex_rect.position = Vector2(-8, -48)
-	tex_rect.size = Vector2(80, 114)
+	tex_rect.position = Vector2(-12, -72)
+	tex_rect.size = Vector2(120, 171)
 	slot1.add_child(tex_rect)
 	
 	# Conectar hover
@@ -1716,8 +1712,7 @@ func _on_card_mouse_entered() -> void:
 	style.border_width_bottom = 2
 	style.border_color = Color(1, 1, 1, 0.8)
 
-	style.shadow_color = Color(0, 0, 0, 0.4)
-	style.shadow_size = 8
+
 	_hover_info_panel.add_theme_stylebox_override("panel", style)
 	
 	var margin := MarginContainer.new()

@@ -25,7 +25,7 @@ const LEVEL_CARD_PREFAB = preload("res://Scene/MenuPrincipal/level_card_item.tsc
 # Elementos del Selector de Niveles
 @onready var level_select_overlay: Control = $LevelSelectOverlay
 @onready var level_select_back_button: Button = $LevelSelectOverlay/MarginContainer/VBoxContainer/Footer/BackButton
-@onready var test_unlock_button: Button = $LevelSelectOverlay/MarginContainer/VBoxContainer/Footer/TestUnlockButton
+@onready var test_unlock_button: Button = null
 # @onready var levels_container: VBoxContainer = $LevelSelectOverlay/MarginContainer/VBoxContainer/ScrollContainer/LevelsContainer
 var level_map_view: Node2D
 

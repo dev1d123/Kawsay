@@ -17,10 +17,14 @@ metadata/_custom_type_script = "uid://unnkle6ixhu"
 [resource]
 script = ExtResource("1_eb8a2")
 level_name = "Los Pastores – Refugio de Ceniza"
+generation_mode = 3
 win_conditions = Array[ExtResource("2_0rc3a")]([SubResource("Resource_yyfd5"), SubResource("Resource_citc3")])
 ai_difficulty = 4
-powerup_count = 7
+manual_coords = Array[Vector2i]([])
+powerup_count = 11
 width = 25
 height = 20
 radius = 18
+random_bite_chance = 0.15
+random_seed = -1
 metadata/_custom_type_script = "uid://cnj7lywfb6vtt"

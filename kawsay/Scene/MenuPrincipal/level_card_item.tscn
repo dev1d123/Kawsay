@@ -12,8 +12,7 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 0.8)
 
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 8
+
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_level_card_hover"]
 bg_color = Color(0.160784, 0.192157, 0.282353, 1)
@@ -23,8 +22,7 @@ border_width_right = 2
 border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
-shadow_color = Color(0.960784, 0.745098, 0.278431, 0.3)
-shadow_size = 12
+
 
 [sub_resource type="FontVariation" id="FontVariation_efi5t"]
 base_font = ExtResource("2_jqd5j")
